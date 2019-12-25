@@ -1,3 +1,8 @@
+/*
+ * Improved Stations by shedaniel.
+ * Licensed under the MIT.
+ */
+
 package me.shedaniel.istations.rei;
 
 import me.shedaniel.istations.containers.CraftingStationContainer;

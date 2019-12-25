@@ -1,3 +1,8 @@
+/*
+ * Improved Stations by shedaniel.
+ * Licensed under the MIT.
+ */
+
 package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;

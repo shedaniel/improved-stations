@@ -1,3 +1,8 @@
+/*
+ * Improved Stations by shedaniel.
+ * Licensed under the MIT.
+ */
+
 package me.shedaniel.istations.blocks;
 
 import net.minecraft.block.Block;
