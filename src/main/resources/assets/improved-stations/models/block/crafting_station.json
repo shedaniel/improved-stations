@@ -1,0 +1,11 @@
+{
+  "parent": "improved-stations:block/table",
+  "textures": {
+    "particle": "improved-stations:block/crafting_station_top",
+    "top": "improved-stations:block/crafting_station_top",
+    "side": "improved-stations:block/crafting_station_side",
+    "bottom": "minecraft:block/oak_planks",
+    "leg": "improved-stations:block/table_side",
+    "legBottom": "minecraft:block/oak_planks"
+  }
+}

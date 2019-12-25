@@ -1,0 +1,67 @@
+{
+  "variants": {
+    "facing=north,type=bottom,lit=false": {
+      "model": "improved-stations:block/smoker_slab"
+    },
+    "facing=south,type=bottom,lit=false": {
+      "model": "improved-stations:block/smoker_slab",
+      "y": 180
+    },
+    "facing=west,type=bottom,lit=false": {
+      "model": "improved-stations:block/smoker_slab",
+      "y": 270
+    },
+    "facing=east,type=bottom,lit=false": {
+      "model": "improved-stations:block/smoker_slab",
+      "y": 90
+    },
+    "facing=north,type=top,lit=false": {
+      "model": "improved-stations:block/smoker_slab_top"
+    },
+    "facing=south,type=top,lit=false": {
+      "model": "improved-stations:block/smoker_slab_top",
+      "y": 180
+    },
+    "facing=west,type=top,lit=false": {
+      "model": "improved-stations:block/smoker_slab_top",
+      "y": 270
+    },
+    "facing=east,type=top,lit=false": {
+      "model": "improved-stations:block/smoker_slab_top",
+      "y": 90
+    },
+    "facing=north,type=bottom,lit=true": {
+      "model": "improved-stations:block/smoker_slab_lit"
+    },
+    "facing=south,type=bottom,lit=true": {
+      "model": "improved-stations:block/smoker_slab_lit",
+      "y": 180
+    },
+    "facing=west,type=bottom,lit=true": {
+      "model": "improved-stations:block/smoker_slab_lit",
+      "y": 270
+    },
+    "facing=east,type=bottom,lit=true": {
+      "model": "improved-stations:block/smoker_slab_lit",
+      "y": 90
+    },
+    "facing=north,type=top,lit=true": {
+      "model": "improved-stations:block/smoker_slab_top_lit"
+    },
+    "facing=south,type=top,lit=true": {
+      "model": "improved-stations:block/smoker_slab_top_lit",
+      "y": 180
+    },
+    "facing=west,type=top,lit=true": {
+      "model": "improved-stations:block/smoker_slab_top_lit",
+      "y": 270
+    },
+    "facing=east,type=top,lit=true": {
+      "model": "improved-stations:block/smoker_slab_top_lit",
+      "y": 90
+    },
+    "type=double": {
+      "model": "block/smoker"
+    }
+  }
+}

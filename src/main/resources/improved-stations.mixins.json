@@ -1,11 +1,11 @@
 {
   "required": true,
-  "package": "net.fabricmc.example.mixin",
+  "package": "me.shedaniel.istations.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinBlockEntityType"
   ],
   "client": [
-    "ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

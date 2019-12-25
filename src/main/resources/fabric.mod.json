@@ -1,37 +1,38 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "improved-stations",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Improved Stations",
+  "description": "Adds different kinds of stations into Minecraft.",
   "authors": [
-    "Me!"
+    "shedaniel"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/shedaniel/improved-stations",
+    "issues": "https://github.com/shedaniel/improved-stations/issues"
   },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
+  "license": "CC-BY-NC-4.0",
+  "icon": "assets/improved-stations/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "me.shedaniel.istations.ImprovedStations"
+    ],
+    "client": [
+      "me.shedaniel.istations.ImprovedStationsClient"
+    ],
+    "rei_containers": [
+      "me.shedaniel.istations.rei.ImprovedStationsREIContainerInfo"
+    ],
+    "rei_plugins_v0": [
+      "me.shedaniel.istations.rei.ImprovedStationsREIPlugin"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "improved-stations.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.2",
-    "fabric": "*",
-    "minecraft": "1.15.x"
-  },
-  "suggests": {
-    "flamingo": "*"
+    "fabric": "*"
   }
 }

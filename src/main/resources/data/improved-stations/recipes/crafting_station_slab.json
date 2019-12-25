@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "improved-stations:crafting_station"
+    }
+  ],
+  "result": {
+    "item": "improved-stations:crafting_station_slab",
+    "count": 2
+  }
+}

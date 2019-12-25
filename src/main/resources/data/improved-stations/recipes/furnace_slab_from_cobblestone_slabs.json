@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "___",
+    "_ _",
+    "___"
+  ],
+  "key": {
+    "_": {
+      "item": "minecraft:cobblestone_slab"
+    }
+  },
+  "result": {
+    "item": "improved-stations:furnace_slab",
+    "count": 1
+  }
+}

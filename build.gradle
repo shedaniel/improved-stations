@@ -41,6 +41,8 @@ dependencies {
     modRuntime ("io.github.prospector:modmenu:${project.modmenu_version}") {
         transitive = false
     }
+	modCompileOnly ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
+	modRuntime ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
     compileOnly 'org.jetbrains:annotations:15.0'
     modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {

@@ -1,0 +1,9 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "particle": "improved-stations:block/crafting_station_top",
+    "top": "improved-stations:block/crafting_station_top",
+    "side": "improved-stations:block/crafting_station_slab_side",
+    "bottom": "minecraft:block/oak_planks"
+  }
+}
