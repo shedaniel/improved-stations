@@ -1,0 +1,36 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "block/cartography_table_side1",
+		"1": "block/cartography_table_side2",
+		"2": "block/cartography_table_side3",
+		"3": "block/cartography_table_top",
+		"particle": "block/cartography_table_side3"
+	},
+	"elements": [
+		{
+			"from": [0, 1, 0],
+			"to": [16, 8, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 7], "texture": "#2"},
+				"east": {"uv": [0, 0, 16, 7], "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 7], "texture": "#0"},
+				"west": {"uv": [0, 0, 16, 7], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 1, 16],
+			"faces": {
+				"north": {"uv": [0, 15, 16, 16], "texture": "#2"},
+				"east": {"uv": [0, 15, 16, 16], "texture": "#2"},
+				"south": {"uv": [0, 15, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 15, 16, 16], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#2"}
+			}
+		}
+	]
+}

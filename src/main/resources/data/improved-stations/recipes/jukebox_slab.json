@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:jukebox"
+    }
+  ],
+  "result": {
+    "item": "improved-stations:jukebox_slab",
+    "count": 2
+  }
+}

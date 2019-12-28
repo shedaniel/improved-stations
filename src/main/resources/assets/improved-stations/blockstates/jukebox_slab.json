@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "improved-stations:block/jukebox_slab"
+    },
+    "type=top": {
+      "model": "improved-stations:block/jukebox_slab_top"
+    },
+    "type=double": {
+      "model": "minecraft:block/jukebox"
+    }
+  }
+}

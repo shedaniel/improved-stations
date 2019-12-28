@@ -3,7 +3,11 @@
   "package": "me.shedaniel.istations.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlockEntityType"
+    "MixinBlockEntityType",
+    "MixinCraftingTableContainer",
+    "MixinMusicDiscItem",
+    "MixinLoomContainer",
+    "MixinCartographyTableContainer",
   ],
   "client": [
   ],

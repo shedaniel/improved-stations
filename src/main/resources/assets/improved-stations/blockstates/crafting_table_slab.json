@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "improved-stations:block/crafting_table_slab"
+    },
+    "type=top": {
+      "model": "improved-stations:block/crafting_table_slab_top"
+    },
+    "type=double": {
+      "model": "minecraft:block/crafting_table"
+    }
+  }
+}

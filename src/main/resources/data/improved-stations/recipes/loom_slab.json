@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:loom"
+    }
+  ],
+  "result": {
+    "item": "improved-stations:loom_slab",
+    "count": 2
+  }
+}

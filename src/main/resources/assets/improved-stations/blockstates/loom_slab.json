@@ -1,0 +1,37 @@
+{
+  "variants": {
+    "facing=north,type=bottom": {
+      "model": "improved-stations:block/loom_slab"
+    },
+    "facing=south,type=bottom": {
+      "model": "improved-stations:block/loom_slab",
+      "y": 180
+    },
+    "facing=west,type=bottom": {
+      "model": "improved-stations:block/loom_slab",
+      "y": 270
+    },
+    "facing=east,type=bottom": {
+      "model": "improved-stations:block/loom_slab",
+      "y": 90
+    },
+    "facing=north,type=top": {
+      "model": "improved-stations:block/loom_slab_top"
+    },
+    "facing=south,type=top": {
+      "model": "improved-stations:block/loom_slab_top",
+      "y": 180
+    },
+    "facing=west,type=top": {
+      "model": "improved-stations:block/loom_slab_top",
+      "y": 270
+    },
+    "facing=east,type=top": {
+      "model": "improved-stations:block/loom_slab_top",
+      "y": 90
+    },
+    "type=double": {
+      "model": "block/loom"
+    }
+  }
+}
