@@ -1,10 +1,10 @@
 {
 	"parent": "block/block",
 	"textures": {
-		"front": "improved_stations:block/furnace_slab_front_on",
+		"front": "improved-stations:block/furnace_slab_front_on",
 		"side": "block/furnace_side",
 		"top": "block/furnace_top",
-		"particle": "improved_stations:block/furnace_slab_front_on"
+		"particle": "improved-stations:block/furnace_slab_front_on"
 	},
 	"elements": [
 		{
