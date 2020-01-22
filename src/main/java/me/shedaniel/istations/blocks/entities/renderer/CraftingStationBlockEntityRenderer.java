@@ -37,13 +37,13 @@ public class CraftingStationBlockEntityRenderer extends BlockEntityRenderer<Craf
             int lightAbove = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().up());
             BlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
             Direction o = state.get(HorizontalFacingBlock.FACING);
-            SlabType slabType = state.get(SlabBlock.TYPE);
+            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.contains(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++) {
                     int slotId = x + y * 3;
                     int newX = x - 1;
                     int newY = y - 1;
-            
+                    
                     if (o == Direction.NORTH) {
                         newX *= -1;
                         newY *= -1;
@@ -58,13 +58,13 @@ public class CraftingStationBlockEntityRenderer extends BlockEntityRenderer<Craf
                         newX = tmp;
                         newX *= -1;
                     }
-            
+                    
                     ItemStack stack = blockEntity.getInvStack(slotId);
                     if (stack.isEmpty())
                         continue;
                     BakedModel bakedModel = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, null, null);
                     matrices.push();
-                    if (state.getBlock() instanceof CraftingStationSlabBlock && slabType == SlabType.BOTTOM) {
+                    if (slabType == SlabType.BOTTOM) {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, .5d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
                     } else {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, 1d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
