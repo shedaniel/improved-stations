@@ -6,113 +6,137 @@
 package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.container.Container;
+import me.shedaniel.istations.containers.CraftingStationContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IRecipeHelperPopulator;
+import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.RecipeFinder;
-import net.minecraft.recipe.RecipeInputProvider;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.LockableTileEntity;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 
-public class CraftingStationBlockEntity extends LockableContainerBlockEntity implements RecipeInputProvider {
+public class CraftingStationBlockEntity extends LockableTileEntity implements IRecipeHelperPopulator {
     
-    protected DefaultedList<ItemStack> inventory;
+    protected Inventory inventory;
     
     public CraftingStationBlockEntity() {
         super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY);
-        this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
+        this.inventory = new Inventory(9);
     }
     
     @Override
-    protected Text getContainerName() {
-        return new TranslatableText("container.crafting");
+    protected ITextComponent getDefaultName() {
+        return new TranslationTextComponent("container.crafting");
     }
     
     @Override
-    protected Container createContainer(int syncId, PlayerInventory playerInventory) {
+    protected Container createMenu(int id, PlayerInventory player) {
         return null;
     }
     
+    @Nullable
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
-        this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
-        Inventories.fromTag(tag, this.inventory);
+    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity playerEntity) {
+        return this.canOpen(playerEntity) ? new CraftingStationContainer(id, inventory, playerEntity.world, getPos()) : null;
     }
     
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        Inventories.toTag(tag, this.inventory);
+    public void read(CompoundNBT tag) {
+        super.read(tag);
+        this.inventory = new Inventory(9);
+        this.inventory.deserializeNBT(tag.getCompound("inv"));
+    }
+    
+    @Override
+    public CompoundNBT write(CompoundNBT tag) {
+        super.write(tag);
+        tag.put("inv", this.inventory.serializeNBT());
         return tag;
     }
     
     @Override
-    public int getInvSize() {
-        return this.inventory.size();
+    public int getSizeInventory() {
+        return this.inventory.getSlots();
     }
     
     @Override
-    public boolean isInvEmpty() {
-        Iterator var1 = this.inventory.iterator();
+    public boolean isEmpty() {
+        Iterator<ItemStack> var1 = this.inventory.getStacks().iterator();
         ItemStack itemStack;
         do {
             if (!var1.hasNext())
                 return true;
-            itemStack = (ItemStack) var1.next();
+            itemStack = var1.next();
         } while (itemStack.isEmpty());
         return false;
     }
     
     @Override
-    public ItemStack getInvStack(int slot) {
-        return this.inventory.get(slot);
+    public ItemStack getStackInSlot(int slot) {
+        return this.inventory.getStackInSlot(slot);
     }
     
     @Override
-    public ItemStack takeInvStack(int slot, int amount) {
-        return Inventories.splitStack(this.inventory, slot, amount);
+    public ItemStack decrStackSize(int slot, int amount) {
+        return ItemStackHelper.getAndSplit(this.inventory.getStacks(), slot, amount);
     }
     
     @Override
-    public ItemStack removeInvStack(int slot) {
-        return Inventories.removeStack(this.inventory, slot);
+    public ItemStack removeStackFromSlot(int slot) {
+        return ItemStackHelper.getAndRemove(this.inventory.getStacks(), slot);
     }
     
     @Override
-    public void setInvStack(int slot, ItemStack stack) {
-        this.inventory.set(slot, stack);
-        if (stack.getCount() > this.getInvMaxStackAmount()) {
-            stack.setCount(this.getInvMaxStackAmount());
+    public void setInventorySlotContents(int slot, ItemStack stack) {
+        this.inventory.setStackInSlot(slot, stack);
+        if (stack.getCount() > this.getInventoryStackLimit()) {
+            stack.setCount(this.getInventoryStackLimit());
         }
     }
     
     @Override
-    public boolean canPlayerUseInv(PlayerEntity player) {
-        if (this.world.getBlockEntity(this.pos) != this) {
+    public boolean isUsableByPlayer(PlayerEntity player) {
+        if (this.world.getTileEntity(this.pos) != this) {
             return false;
         } else {
-            return player.squaredDistanceTo((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+            return player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
         }
     }
     
     @Override
     public void clear() {
-        this.inventory.clear();
+        this.inventory.getStacks().clear();
     }
     
-    @Override
-    public void provideRecipeInputs(RecipeFinder recipeFinder) {
-        for (ItemStack stack : inventory) {
-            recipeFinder.addItem(stack);
+    public void fillStackedContents(RecipeItemHelper helper) {
+        for (ItemStack stack : inventory.getStacks()) {
+            helper.accountStack(stack);
+        }
+    }
+    
+    private static class Inventory extends ItemStackHandler {
+        public Inventory() {
+        }
+        
+        public Inventory(int size) {
+            super(size);
+        }
+        
+        public Inventory(NonNullList<ItemStack> stacks) {
+            super(stacks);
+        }
+        
+        public NonNullList<ItemStack> getStacks() {
+            return stacks;
         }
     }
 }
