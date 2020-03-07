@@ -24,14 +24,15 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class CraftingStationContainer extends Container {
     private final CraftingResultInventory resultInv;
-    private BlockContext context;
-    private CraftingStationBlockEntity entity;
-    private CraftingInventory craftingInventory;
-    private PlayerEntity player;
+    private final BlockContext context;
+    private final CraftingStationBlockEntity entity;
+    private final CraftingInventory craftingInventory;
+    private final PlayerEntity player;
     
     public CraftingStationContainer(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, BlockContext blockContext) {
         super(null, syncId);
@@ -55,22 +56,22 @@ public class CraftingStationContainer extends Container {
             
             @Override
             public ItemStack removeInvStack(int slot) {
-                ItemStack stack = entity.removeInvStack(slot);
-                onContentChanged(this);
-                return stack;
+                return entity.removeInvStack(slot);
             }
             
             @Override
             public ItemStack takeInvStack(int slot, int amount) {
                 ItemStack stack = entity.takeInvStack(slot, amount);
-                onContentChanged(this);
+                if (!stack.isEmpty()) {
+                    onContentChanged(craftingInventory);
+                }
                 return stack;
             }
             
             @Override
             public void setInvStack(int slot, ItemStack stack) {
                 entity.setInvStack(slot, stack);
-                onContentChanged(this);
+                onContentChanged(craftingInventory);
             }
             
             @Override
@@ -113,16 +114,21 @@ public class CraftingStationContainer extends Container {
         for (m = 0; m < 9; ++m) {
             this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
         }
+    }
+    
+    @Override
+    public void sendContentUpdates() {
         updateResult(syncId, player.world, player, craftingInventory, resultInv);
+        super.sendContentUpdates();
     }
     
     protected void updateResult(int syncId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftingResultInventory resultInventory) {
         if (!world.isClient) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
             ItemStack itemStack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+            Optional<CraftingRecipe> optional = Objects.requireNonNull(world.getServer()).getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
             if (optional.isPresent()) {
-                CraftingRecipe craftingRecipe = (CraftingRecipe) optional.get();
+                CraftingRecipe craftingRecipe = optional.get();
                 if (resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe)) {
                     itemStack = craftingRecipe.craft(craftingInventory);
                 }
@@ -145,20 +151,21 @@ public class CraftingStationContainer extends Container {
     @Override
     public void onContentChanged(Inventory inventory) {
         super.onContentChanged(inventory);
-        updateResult(this.syncId, player.world, this.player, this.craftingInventory, this.resultInv);
+        sendContentUpdates();
+        if (!player.world.isClient) {
+            entity.markDirty();
+        }
     }
     
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.context.run((world, blockPos) -> {
-            return !(world.getBlockState(blockPos).getBlock() instanceof CraftingStationBlock) ? false : player.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
-        }, true);
+        return this.context.run((world, blockPos) -> world.getBlockState(blockPos).getBlock() instanceof CraftingStationBlock && player.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D, true);
     }
     
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = (Slot) this.slotList.get(invSlot);
+        Slot slot = this.slotList.get(invSlot);
         if (slot != null && slot.hasStack()) {
             ItemStack itemStack2 = slot.getStack();
             itemStack = itemStack2.copy();

@@ -69,14 +69,14 @@ public class CraftingStationBlockEntityRenderer extends BlockEntityRenderer<Craf
                     } else {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, 1d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
                     }
-                    if (!bakedModel.hasDepthInGui()) {
+                    if (!bakedModel.hasDepth()) {
                         matrices.translate(0, .55 / 16d, -.5d / 16d);
                         matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
                         matrices.scale(.3f, .3f, .3f);
                     } else {
                         matrices.scale(.5f, .5f, .5f);
                     }
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.DEFAULT_UV, bakedModel);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.DEFAULT_UV, bakedModel);
                     matrices.pop();
                 }
         } catch (Exception e) {

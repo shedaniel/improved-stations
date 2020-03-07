@@ -73,7 +73,7 @@ public class ImprovedStations implements ModInitializer {
         Registry.register(Registry.BLOCK, CARTOGRAPHY_TABLE_SLAB_ID, CARTOGRAPHY_TABLE_SLAB);
         Registry.register(Registry.ITEM, CARTOGRAPHY_TABLE_SLAB_ID, new BlockItem(CARTOGRAPHY_TABLE_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
         
-        Registry.register(Registry.BLOCK_ENTITY, CRAFTING_STATION_ID, CRAFTING_STATION_BLOCK_ENTITY);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, CRAFTING_STATION_ID, CRAFTING_STATION_BLOCK_ENTITY);
         ContainerProviderRegistry.INSTANCE.registerFactory(CRAFTING_STATION_ID, (syncId, identifier, playerEntity, packetByteBuf) -> {
             BlockPos pos = packetByteBuf.readBlockPos();
             return new CraftingStationContainer(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), BlockContext.create(playerEntity.world, pos));

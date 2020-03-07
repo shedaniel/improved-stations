@@ -11,7 +11,6 @@ import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.RecipeFinder;
@@ -20,7 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DefaultedList;
 
-import java.util.Iterator;
+import java.util.Objects;
 
 public class CraftingStationBlockEntity extends LockableContainerBlockEntity implements RecipeInputProvider {
     
@@ -62,14 +61,11 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     
     @Override
     public boolean isInvEmpty() {
-        Iterator var1 = this.inventory.iterator();
-        ItemStack itemStack;
-        do {
-            if (!var1.hasNext())
-                return true;
-            itemStack = (ItemStack) var1.next();
-        } while (itemStack.isEmpty());
-        return false;
+        for (ItemStack itemStack : this.inventory) {
+            if (!itemStack.isEmpty())
+                return false;
+        }
+        return true;
     }
     
     @Override
@@ -97,7 +93,7 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     
     @Override
     public boolean canPlayerUseInv(PlayerEntity player) {
-        if (this.world.getBlockEntity(this.pos) != this) {
+        if (Objects.requireNonNull(this.world).getBlockEntity(this.pos) != this) {
             return false;
         } else {
             return player.squaredDistanceTo((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
