@@ -7,12 +7,12 @@ package me.shedaniel.istations.containers;
 
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.CraftingStationBlock;
+import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
@@ -28,67 +28,67 @@ public class CraftingStationContainer extends Container {
     private final IWorldPosCallable context;
     private final CraftingInventory craftingInventory;
     private final PlayerEntity player;
+    private final CraftingStationBlockEntity entity;
     
     public CraftingStationContainer(int syncId, PlayerInventory playerInventory, World world, BlockPos pos) {
         super(ImprovedStations.CRAFTING_STATION_CONTAINER, syncId);
         this.resultInv = new CraftResultInventory();
         this.player = playerInventory.player;
-        IInventory inventory = (IInventory) world.getTileEntity(pos);
+        entity = (CraftingStationBlockEntity) world.getTileEntity(pos);
         this.craftingInventory = new CraftingInventory(this, 3, 3) {
             @Override
             public int getSizeInventory() {
-                return inventory.getSizeInventory();
+                return entity.getSizeInventory();
             }
             
             @Override
             public boolean isEmpty() {
-                return inventory.isEmpty();
+                return entity.isEmpty();
             }
             
             @Override
             public ItemStack getStackInSlot(int index) {
-                return inventory.getStackInSlot(index);
+                return entity.getStackInSlot(index);
             }
             
             @Override
             public ItemStack removeStackFromSlot(int index) {
-                ItemStack stack = inventory.removeStackFromSlot(index);
-                onCraftMatrixChanged(this);
-                return stack;
+                return entity.removeStackFromSlot(index);
             }
             
             @Override
             public ItemStack decrStackSize(int index, int count) {
-                ItemStack stack = inventory.decrStackSize(index, count);
-                onCraftMatrixChanged(this);
+                ItemStack stack = entity.decrStackSize(index, count);
+                if (!stack.isEmpty()) {
+                    onCraftMatrixChanged(craftingInventory);
+                }
                 return stack;
             }
             
             @Override
             public void setInventorySlotContents(int index, ItemStack stack) {
-                inventory.setInventorySlotContents(index, stack);
-                onCraftMatrixChanged(this);
+                entity.setInventorySlotContents(index, stack);
+                onCraftMatrixChanged(craftingInventory);
             }
             
             @Override
             public void markDirty() {
-                inventory.markDirty();
+                entity.markDirty();
             }
             
             @Override
             public boolean isUsableByPlayer(PlayerEntity player) {
-                return inventory.isUsableByPlayer(player);
+                return entity.isUsableByPlayer(player);
             }
             
             @Override
             public void clear() {
-                inventory.clear();
+                entity.clear();
             }
             
             @Override
             public void fillStackedContents(RecipeItemHelper recipeFinder) {
-                if (inventory instanceof IRecipeHelperPopulator)
-                    ((IRecipeHelperPopulator) inventory).fillStackedContents(recipeFinder);
+                entity.fillStackedContents(recipeFinder);
             }
         };
         this.context = IWorldPosCallable.of(world, pos);
@@ -110,7 +110,12 @@ public class CraftingStationContainer extends Container {
         for (m = 0; m < 9; ++m) {
             this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
         }
-        updateResult(syncId, player.world, player, craftingInventory, resultInv);
+    }
+    
+    @Override
+    public void detectAndSendChanges() {
+        updateResult(this.windowId, player.world, player, craftingInventory, resultInv);
+        super.detectAndSendChanges();
     }
     
     protected static void updateResult(int syncId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftResultInventory resultInventory) {
@@ -129,7 +134,10 @@ public class CraftingStationContainer extends Container {
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
         super.onCraftMatrixChanged(inventory);
-        updateResult(this.windowId, player.world, this.player, this.craftingInventory, this.resultInv);
+        detectAndSendChanges();
+        if (!player.world.isRemote) {
+            entity.markDirty();
+        }
     }
     
     @Override
