@@ -6,11 +6,11 @@
 package me.shedaniel.istations.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlacementEnvironment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.EntityContext;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -22,8 +22,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-
-import javax.annotation.Nullable;
 
 public class CraftingStationSlabBlock extends CraftingStationBlock {
     public static final EnumProperty<SlabType> TYPE = SlabBlock.TYPE;
@@ -40,7 +38,6 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, Boolean.FALSE));
     }
     
-    @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos blockPos = ctx.getBlockPos();
@@ -51,7 +48,7 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
             FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(FACING, ctx.getPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             Direction direction = ctx.getSide();
-            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitPos().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : (BlockState) blockState2.with(TYPE, SlabType.TOP);
+            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitPos().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
         }
     }
     
@@ -62,20 +59,13 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPlaceAtSide(BlockState world, BlockView view, BlockPos pos, BlockPlacementEnvironment env) {
-        switch (env) {
-            case LAND:
-                return false;
-            case WATER:
-                return view.getFluidState(pos).matches(FluidTags.WATER);
-            case AIR:
-                return false;
-            default:
-                return false;
+    public boolean canPathfindThrough(BlockState world, BlockView view, BlockPos pos, NavigationType env) {
+        if (env == NavigationType.WATER) {
+            return view.getFluidState(pos).matches(FluidTags.WATER);
         }
+        return false;
     }
     
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
         SlabType slabType = blockState_1.get(TYPE);

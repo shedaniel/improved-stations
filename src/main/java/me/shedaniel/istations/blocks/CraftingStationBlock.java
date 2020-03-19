@@ -10,7 +10,6 @@ import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +17,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -31,8 +31,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class CraftingStationBlock extends BlockWithEntity implements Waterloggable {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
@@ -49,7 +47,6 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
     
-    @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos blockPos = ctx.getBlockPos();
@@ -82,10 +79,9 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean) state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
     
-    @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockView view) {
         return new CraftingStationBlockEntity();
@@ -99,10 +95,9 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
         return ActionResult.SUCCESS;
     }
     
-    @SuppressWarnings("deprecation")
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state,
-            @Nullable LivingEntity placer, ItemStack itemStack) {
+            LivingEntity placer, ItemStack itemStack) {
         if (itemStack.hasCustomName()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
@@ -114,7 +109,7 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     @SuppressWarnings("deprecation")
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean) state.get(WATERLOGGED)) {
+        if (state.get(WATERLOGGED)) {
             world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
@@ -127,7 +122,7 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
                 ItemScatterer.spawn(world, pos, (CraftingStationBlockEntity) blockEntity);
-                world.updateHorizontalAdjacent(pos, this);
+                world.updateComparators(pos, this);
             }
             super.onBlockRemoved(state, world, pos, newState, moved);
         }
@@ -142,10 +137,9 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     @SuppressWarnings("deprecation")
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return Container.calculateComparatorOutput(world.getBlockEntity(pos));
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
     }
     
-    @SuppressWarnings("deprecation")
     @Override
     public BlockRenderType getRenderType(BlockState blockState_1) {
         return BlockRenderType.MODEL;

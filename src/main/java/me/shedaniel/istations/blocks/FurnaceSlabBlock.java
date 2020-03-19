@@ -11,9 +11,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.enums.SlabType;
-import net.minecraft.container.NameableContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -22,7 +22,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 public class FurnaceSlabBlock extends AbstactFurnaceSlabBlock {
@@ -31,15 +30,14 @@ public class FurnaceSlabBlock extends AbstactFurnaceSlabBlock {
     }
     
     @Override
-    protected void openContainer(World world, BlockPos pos, PlayerEntity player) {
+    protected void openScreen(World world, BlockPos pos, PlayerEntity player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof FurnaceBlockEntity) {
-            player.openContainer((NameableContainerProvider) blockEntity);
+            player.openHandledScreen((NamedScreenHandlerFactory) blockEntity);
             player.incrementStat(Stats.INTERACT_WITH_FURNACE);
         }
     }
     
-    @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockView view) {
         return new FurnaceBlockEntity();
@@ -56,7 +54,7 @@ public class FurnaceSlabBlock extends AbstactFurnaceSlabBlock {
                 world.playSound(d, e, f, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
             }
             
-            Direction direction = (Direction) state.get(FACING);
+            Direction direction = state.get(FACING);
             Direction.Axis axis = direction.getAxis();
             double g = 0.52D;
             double h = random.nextDouble() * 0.6D - 0.3D;

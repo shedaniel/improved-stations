@@ -8,8 +8,6 @@ package me.shedaniel.istations.mixin;
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.JukeboxSlabBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.JukeboxBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

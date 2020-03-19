@@ -5,16 +5,15 @@
 
 package me.shedaniel.istations.blocks;
 
-import me.shedaniel.istations.blocks.AbstactFurnaceSlabBlock;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SmokerBlockEntity;
 import net.minecraft.block.enums.SlabType;
-import net.minecraft.container.NameableContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -22,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 public class SmokerSlabBlock extends AbstactFurnaceSlabBlock {
@@ -31,15 +29,14 @@ public class SmokerSlabBlock extends AbstactFurnaceSlabBlock {
     }
     
     @Override
-    protected void openContainer(World world, BlockPos pos, PlayerEntity player) {
+    protected void openScreen(World world, BlockPos pos, PlayerEntity player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof SmokerBlockEntity) {
-            player.openContainer((NameableContainerProvider) blockEntity);
+            player.openHandledScreen((NamedScreenHandlerFactory) blockEntity);
             player.incrementStat(Stats.INTERACT_WITH_FURNACE);
         }
     }
     
-    @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockView view) {
         return new SmokerBlockEntity();

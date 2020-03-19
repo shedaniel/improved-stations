@@ -8,6 +8,7 @@ package me.shedaniel.istations.blocks;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.EntityContext;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -20,8 +21,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
-
-import javax.annotation.Nullable;
 
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
@@ -40,9 +39,9 @@ public abstract class AbstactFurnaceSlabBlock extends AbstractFurnaceBlock imple
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, Boolean.FALSE).with(LIT, Boolean.FALSE));
     }
     
-    @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
+        assert ctx != null;
         BlockPos blockPos = ctx.getBlockPos();
         BlockState blockState = ctx.getWorld().getBlockState(blockPos);
         if (blockState.getBlock() == this) {
@@ -51,25 +50,27 @@ public abstract class AbstactFurnaceSlabBlock extends AbstractFurnaceBlock imple
             FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(FACING, ctx.getPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             Direction direction = ctx.getSide();
-            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitPos().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : (BlockState) blockState2.with(TYPE, SlabType.TOP);
+            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitPos().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
         }
     }
     
     @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean) state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        assert state != null;
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
     
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        assert builder != null;
         builder.add(FACING, LIT, WATERLOGGED, TYPE);
     }
     
     @SuppressWarnings("deprecation")
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean) state.get(WATERLOGGED)) {
+        if (state.get(WATERLOGGED)) {
             world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
@@ -77,17 +78,11 @@ public abstract class AbstactFurnaceSlabBlock extends AbstractFurnaceBlock imple
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPlaceAtSide(BlockState world, BlockView view, BlockPos pos, BlockPlacementEnvironment env) {
-        switch (env) {
-            case LAND:
-                return false;
-            case WATER:
-                return view.getFluidState(pos).matches(FluidTags.WATER);
-            case AIR:
-                return false;
-            default:
-                return false;
+    public boolean canPathfindThrough(BlockState world, BlockView view, BlockPos pos, NavigationType env) {
+        if (env == NavigationType.WATER) {
+            return view.getFluidState(pos).matches(FluidTags.WATER);
         }
+        return false;
     }
     
     @SuppressWarnings("deprecation")

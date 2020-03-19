@@ -7,18 +7,17 @@ package me.shedaniel.istations;
 
 import me.shedaniel.istations.blocks.*;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
-import me.shedaniel.istations.containers.CraftingStationContainer;
+import me.shedaniel.istations.containers.CraftingStationScreenHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CartographyTableBlock;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -60,23 +59,23 @@ public class ImprovedStations implements ModInitializer {
         
         Registry.register(Registry.BLOCK, BLAST_FURNACE_SLAB_ID, BLAST_FURNACE_SLAB);
         Registry.register(Registry.ITEM, BLAST_FURNACE_SLAB_ID, new BlockItem(BLAST_FURNACE_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
-
+        
         Registry.register(Registry.BLOCK, CRAFTING_TABLE_SLAB_ID, CRAFTING_TABLE_SLAB);
         Registry.register(Registry.ITEM, CRAFTING_TABLE_SLAB_ID, new BlockItem(CRAFTING_TABLE_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
-
+        
         Registry.register(Registry.BLOCK, JUKEBOX_SLAB_ID, JUKEBOX_SLAB);
         Registry.register(Registry.ITEM, JUKEBOX_SLAB_ID, new BlockItem(JUKEBOX_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
-
+        
         Registry.register(Registry.BLOCK, LOOM_SLAB_ID, LOOM_SLAB);
         Registry.register(Registry.ITEM, LOOM_SLAB_ID, new BlockItem(LOOM_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
-
+        
         Registry.register(Registry.BLOCK, CARTOGRAPHY_TABLE_SLAB_ID, CARTOGRAPHY_TABLE_SLAB);
         Registry.register(Registry.ITEM, CARTOGRAPHY_TABLE_SLAB_ID, new BlockItem(CARTOGRAPHY_TABLE_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
         
         Registry.register(Registry.BLOCK_ENTITY_TYPE, CRAFTING_STATION_ID, CRAFTING_STATION_BLOCK_ENTITY);
         ContainerProviderRegistry.INSTANCE.registerFactory(CRAFTING_STATION_ID, (syncId, identifier, playerEntity, packetByteBuf) -> {
             BlockPos pos = packetByteBuf.readBlockPos();
-            return new CraftingStationContainer(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), BlockContext.create(playerEntity.world, pos));
+            return new CraftingStationScreenHandler(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), ScreenHandlerContext.create(playerEntity.world, pos));
         });
     }
 }

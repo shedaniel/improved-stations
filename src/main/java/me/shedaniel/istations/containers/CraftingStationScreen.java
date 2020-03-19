@@ -6,23 +6,23 @@
 package me.shedaniel.istations.containers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class CraftingStationScreen extends AbstractContainerScreen<CraftingStationContainer> {
+public class CraftingStationScreen extends HandledScreen<CraftingStationScreenHandler> {
     
     private static final Identifier BG_TEX = new Identifier("textures/gui/container/crafting_table.png");
     
-    public CraftingStationScreen(CraftingStationContainer container, PlayerInventory inventory, Text title) {
+    public CraftingStationScreen(CraftingStationScreenHandler container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
     }
     
     @Override
     protected void drawForeground(int mouseX, int mouseY) {
-        this.font.draw(this.title.asFormattedString(), 28.0F, 6.0F, 4210752);
-        this.font.draw(this.playerInventory.getDisplayName().asFormattedString(), 8.0F, (float) (this.containerHeight - 96 + 2), 4210752);
+        this.textRenderer.draw(this.title.asFormattedString(), 28.0F, 6.0F, 4210752);
+        this.textRenderer.draw(this.playerInventory.getDisplayName().asFormattedString(), 8.0F, (float) (this.backgroundHeight - 96 + 2), 4210752);
     }
     
     @Override
@@ -35,10 +35,10 @@ public class CraftingStationScreen extends AbstractContainerScreen<CraftingStati
     @Override
     protected void drawBackground(float delta, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(BG_TEX);
+        this.client.getTextureManager().bindTexture(BG_TEX);
         int i = this.x;
-        int j = (this.height - this.containerHeight) / 2;
-        this.blit(i, j, 0, 0, this.containerWidth, this.containerHeight);
+        int j = (this.height - this.backgroundHeight) / 2;
+        this.drawTexture(i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
     
 }

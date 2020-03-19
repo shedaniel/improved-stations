@@ -7,14 +7,8 @@ plugins {
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = (project.mod_version as String).contains("unstable") ? (project.mod_version + "." + buildTime()) : project.mod_version
+version = project.mod_version
 group = project.maven_group
-
-static def buildTime() {
-    def df = new java.text.SimpleDateFormat("yyyyMMddHHmm")
-    df.setTimeZone(TimeZone.getTimeZone("UTC"))
-    return df.format(new Date())
-}
 
 license {
     header rootProject.file('HEADER')
@@ -43,11 +37,10 @@ dependencies {
     }
 	modCompileOnly ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
 	modRuntime ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    compileOnly 'org.jetbrains:annotations:15.0'
-    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
-        transitive = false
-    }
+    compileOnly 'org.jetbrains:annotations:19.0.0'
+//    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
+//        transitive = false
+//    }
 }
 
 processResources {

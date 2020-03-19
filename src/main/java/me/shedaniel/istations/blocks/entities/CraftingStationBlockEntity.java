@@ -7,7 +7,6 @@ package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -15,9 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.RecipeInputProvider;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     }
     
     @Override
-    protected Container createContainer(int syncId, PlayerInventory playerInventory) {
+    protected ScreenHandler createContainer(int syncId, PlayerInventory playerInventory) {
         return null;
     }
     

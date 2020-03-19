@@ -7,34 +7,34 @@ package me.shedaniel.istations.containers;
 
 import me.shedaniel.istations.blocks.CraftingStationBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
-import net.minecraft.client.network.packet.GuiSlotUpdateS2CPacket;
-import net.minecraft.container.BlockContext;
-import net.minecraft.container.Container;
-import net.minecraft.container.CraftingResultSlot;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.slot.CraftingResultSlot;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class CraftingStationContainer extends Container {
+public class CraftingStationScreenHandler extends ScreenHandler {
     private final CraftingResultInventory resultInv;
-    private final BlockContext context;
+    private final ScreenHandlerContext context;
     private final CraftingStationBlockEntity entity;
     private final CraftingInventory craftingInventory;
     private final PlayerEntity player;
     
-    public CraftingStationContainer(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, BlockContext blockContext) {
+    public CraftingStationScreenHandler(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, ScreenHandlerContext blockContext) {
         super(null, syncId);
         this.resultInv = new CraftingResultInventory();
         this.player = playerInventory.player;
@@ -135,7 +135,7 @@ public class CraftingStationContainer extends Container {
             }
             
             resultInventory.setInvStack(0, itemStack);
-            serverPlayerEntity.networkHandler.sendPacket(new GuiSlotUpdateS2CPacket(syncId, 0, itemStack));
+            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack));
         }
     }
     
@@ -165,7 +165,7 @@ public class CraftingStationContainer extends Container {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = this.slotList.get(invSlot);
+        Slot slot = this.slots.get(invSlot);
         if (slot != null && slot.hasStack()) {
             ItemStack itemStack2 = slot.getStack();
             itemStack = itemStack2.copy();

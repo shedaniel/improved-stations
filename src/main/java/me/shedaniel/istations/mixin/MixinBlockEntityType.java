@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Mixin(BlockEntityType.class)
@@ -40,10 +41,8 @@ public class MixinBlockEntityType implements BlockEntityTypeHooks {
     
     @Override
     public void istations_applyMoreBlocks(Block... blocks) {
-        ArrayList<Block> list = Lists.newArrayList(this.blocks);
-        for (Block block : blocks) {
-            list.add(block);
-        }
+        List<Block> list = Lists.newArrayList(this.blocks);
+        Collections.addAll(list, blocks);
         this.blocks = ImmutableSet.copyOf(list);
     }
 }
