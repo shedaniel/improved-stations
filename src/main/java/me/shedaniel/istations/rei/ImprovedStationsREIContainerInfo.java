@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 public class ImprovedStationsREIContainerInfo implements Runnable {
     @Override
     public void run() {
-        ContainerInfoHandler.registerScreenWithHandlerInfo(new Identifier("minecraft", "plugins/crafting"), new ContainerInfo<CraftingStationScreenHandler>() {
+        ContainerInfoHandler.registerContainerInfo(new Identifier("minecraft", "plugins/crafting"), new ContainerInfo<CraftingStationScreenHandler>() {
             @Override
             public Class<? extends CraftingStationScreenHandler> getContainerClass() {
                 return CraftingStationScreenHandler.class;

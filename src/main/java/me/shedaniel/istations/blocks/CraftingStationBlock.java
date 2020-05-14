@@ -10,6 +10,7 @@ import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,6 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -122,7 +122,7 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
                 ItemScatterer.spawn(world, pos, (CraftingStationBlockEntity) blockEntity);
-                world.updateComparators(pos, this);
+                world.updateHorizontalAdjacent(pos, this);
             }
             super.onBlockRemoved(state, world, pos, newState, moved);
         }
@@ -137,7 +137,7 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     @SuppressWarnings("deprecation")
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
+        return Container.calculateComparatorOutput(world.getBlockEntity(pos));
     }
     
     @Override

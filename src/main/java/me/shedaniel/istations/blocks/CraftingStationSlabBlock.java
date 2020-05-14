@@ -6,11 +6,11 @@
 package me.shedaniel.istations.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockPlacementEnvironment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.EntityContext;
-import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -59,8 +59,8 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPathfindThrough(BlockState world, BlockView view, BlockPos pos, NavigationType env) {
-        if (env == NavigationType.WATER) {
+    public boolean canPathfindThrough(BlockState world, BlockView view, BlockPos pos, BlockPlacementEnvironment env) {
+        if (env == BlockPlacementEnvironment.WATER) {
             return view.getFluidState(pos).matches(FluidTags.WATER);
         }
         return false;

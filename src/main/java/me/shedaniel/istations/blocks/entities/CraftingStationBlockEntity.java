@@ -6,7 +6,10 @@
 package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -14,14 +17,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.RecipeInputProvider;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Objects;
 
-public class CraftingStationBlockEntity extends LockableContainerBlockEntity implements RecipeInputProvider {
+public class CraftingStationBlockEntity extends LockableContainerBlockEntity implements RecipeInputProvider, BlockEntityClientSerializable {
     
     protected DefaultedList<ItemStack> inventory;
     
@@ -36,13 +38,13 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     }
     
     @Override
-    protected ScreenHandler createContainer(int syncId, PlayerInventory playerInventory) {
+    protected Container createContainer(int syncId, PlayerInventory playerInventory) {
         return null;
     }
     
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
         this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
         Inventories.fromTag(tag, this.inventory);
     }
@@ -110,5 +112,15 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
         for (ItemStack stack : inventory) {
             recipeFinder.addItem(stack);
         }
+    }
+    
+    @Override
+    public void fromClientTag(CompoundTag compoundTag) {
+        fromTag(getCachedState(), compoundTag);
+    }
+    
+    @Override
+    public CompoundTag toClientTag(CompoundTag compoundTag) {
+        return toTag(compoundTag);
     }
 }

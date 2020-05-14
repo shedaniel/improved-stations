@@ -6,11 +6,11 @@
 package me.shedaniel.istations.mixin;
 
 import me.shedaniel.istations.ImprovedStations;
+import net.minecraft.container.BlockContext;
+import net.minecraft.container.Container;
+import net.minecraft.container.ContainerType;
+import net.minecraft.container.LoomContainer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.LoomScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.ScreenHandlerType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(LoomScreenHandler.class)
-public abstract class MixinLoomContainer extends ScreenHandler {
+@Mixin(LoomContainer.class)
+public abstract class MixinLoomContainer extends Container {
     @Shadow
     @Final
-    private ScreenHandlerContext context;
+    private BlockContext context;
     
-    public MixinLoomContainer(ScreenHandlerType<?> containerType, int i) {
+    public MixinLoomContainer(ContainerType<?> containerType, int i) {
         super(containerType, i);
     }
     

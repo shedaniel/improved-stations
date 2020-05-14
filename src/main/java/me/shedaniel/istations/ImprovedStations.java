@@ -9,15 +9,15 @@ import me.shedaniel.istations.blocks.*;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import me.shedaniel.istations.containers.CraftingStationScreenHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -32,15 +32,15 @@ public class ImprovedStations implements ModInitializer {
     public static final Identifier JUKEBOX_SLAB_ID = new Identifier("improved-stations", "jukebox_slab");
     public static final Identifier LOOM_SLAB_ID = new Identifier("improved-stations", "loom_slab");
     public static final Identifier CARTOGRAPHY_TABLE_SLAB_ID = new Identifier("improved-stations", "cartography_table_slab");
-    public static final Block CRAFTING_STATION = new CraftingStationBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque().build());
-    public static final Block CRAFTING_STATION_SLAB = new CraftingStationSlabBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque().build());
-    public static final Block FURNACE_SLAB = new FurnaceSlabBlock(FabricBlockSettings.copy(Blocks.FURNACE).nonOpaque().build());
-    public static final Block SMOKER_SLAB = new SmokerSlabBlock(FabricBlockSettings.copy(Blocks.SMOKER).nonOpaque().build());
-    public static final Block BLAST_FURNACE_SLAB = new BlastFurnaceSlabBlock(FabricBlockSettings.copy(Blocks.BLAST_FURNACE).nonOpaque().build());
-    public static final Block CRAFTING_TABLE_SLAB = new CraftingTableSlabBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque().build());
-    public static final Block JUKEBOX_SLAB = new JukeboxSlabBlock(FabricBlockSettings.copy(Blocks.JUKEBOX).nonOpaque().build());
-    public static final Block LOOM_SLAB = new LoomSlabBlock(FabricBlockSettings.copy(Blocks.LOOM).nonOpaque().build());
-    public static final Block CARTOGRAPHY_TABLE_SLAB = new CartographyTableSlabBlock(FabricBlockSettings.copy(Blocks.CARTOGRAPHY_TABLE).nonOpaque().build());
+    public static final Block CRAFTING_STATION = new CraftingStationBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque());
+    public static final Block CRAFTING_STATION_SLAB = new CraftingStationSlabBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque());
+    public static final Block FURNACE_SLAB = new FurnaceSlabBlock(FabricBlockSettings.copy(Blocks.FURNACE).nonOpaque());
+    public static final Block SMOKER_SLAB = new SmokerSlabBlock(FabricBlockSettings.copy(Blocks.SMOKER).nonOpaque());
+    public static final Block BLAST_FURNACE_SLAB = new BlastFurnaceSlabBlock(FabricBlockSettings.copy(Blocks.BLAST_FURNACE).nonOpaque());
+    public static final Block CRAFTING_TABLE_SLAB = new CraftingTableSlabBlock(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).nonOpaque());
+    public static final Block JUKEBOX_SLAB = new JukeboxSlabBlock(FabricBlockSettings.copy(Blocks.JUKEBOX).nonOpaque());
+    public static final Block LOOM_SLAB = new LoomSlabBlock(FabricBlockSettings.copy(Blocks.LOOM).nonOpaque());
+    public static final Block CARTOGRAPHY_TABLE_SLAB = new CartographyTableSlabBlock(FabricBlockSettings.copy(Blocks.CARTOGRAPHY_TABLE).nonOpaque());
     public static final BlockEntityType<CraftingStationBlockEntity> CRAFTING_STATION_BLOCK_ENTITY = BlockEntityType.Builder.create(CraftingStationBlockEntity::new, CRAFTING_STATION, CRAFTING_STATION_SLAB).build(null);
     
     @Override
@@ -75,7 +75,7 @@ public class ImprovedStations implements ModInitializer {
         Registry.register(Registry.BLOCK_ENTITY_TYPE, CRAFTING_STATION_ID, CRAFTING_STATION_BLOCK_ENTITY);
         ContainerProviderRegistry.INSTANCE.registerFactory(CRAFTING_STATION_ID, (syncId, identifier, playerEntity, packetByteBuf) -> {
             BlockPos pos = packetByteBuf.readBlockPos();
-            return new CraftingStationScreenHandler(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), ScreenHandlerContext.create(playerEntity.world, pos));
+            return new CraftingStationScreenHandler(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), BlockContext.create(playerEntity.world, pos));
         });
     }
 }

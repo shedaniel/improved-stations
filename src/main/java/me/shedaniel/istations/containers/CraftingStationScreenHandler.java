@@ -7,18 +7,18 @@ package me.shedaniel.istations.containers;
 
 import me.shedaniel.istations.blocks.CraftingStationBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
+import net.minecraft.container.BlockContext;
+import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeFinder;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,14 +27,14 @@ import net.minecraft.world.World;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CraftingStationScreenHandler extends ScreenHandler {
+public class CraftingStationScreenHandler extends Container {
     private final CraftingResultInventory resultInv;
-    private final ScreenHandlerContext context;
+    private final BlockContext context;
     private final CraftingStationBlockEntity entity;
     private final CraftingInventory craftingInventory;
     private final PlayerEntity player;
     
-    public CraftingStationScreenHandler(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, ScreenHandlerContext blockContext) {
+    public CraftingStationScreenHandler(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, BlockContext blockContext) {
         super(null, syncId);
         this.resultInv = new CraftingResultInventory();
         this.player = playerInventory.player;
@@ -135,7 +135,7 @@ public class CraftingStationScreenHandler extends ScreenHandler {
             }
             
             resultInventory.setInvStack(0, itemStack);
-            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack));
+            serverPlayerEntity.networkHandler.sendPacket(new ContainerSlotUpdateS2CPacket(syncId, 0, itemStack));
         }
     }
     
