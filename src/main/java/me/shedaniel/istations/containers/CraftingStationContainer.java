@@ -8,6 +8,7 @@ package me.shedaniel.istations.containers;
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.CraftingStationBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftResultInventory;
@@ -19,22 +20,65 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.ModList;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class CraftingStationContainer extends Container {
+
+    private static final Method doubleSlabsGetTileEntity;
+    private static final Method doubleSlabsGetBlockState;
+
+    static {
+        Method doubleSlabsGetTileEntity1 = null;
+        Method doubleSlabsGetBlockState1 = null;
+        if (ModList.get().isLoaded("doubleslabs")) {
+            try {
+                Class<?> doubleSlabsFlags = Class.forName("cjminecraft.doubleslabs.Flags");
+                doubleSlabsGetTileEntity1 = doubleSlabsFlags.getDeclaredMethod("getTileEntityAtPos", BlockPos.class, IBlockReader.class);
+                doubleSlabsGetBlockState1 = doubleSlabsFlags.getDeclaredMethod("getBlockStateAtPos", BlockPos.class, IBlockReader.class);
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                doubleSlabsGetTileEntity1 = null;
+                doubleSlabsGetBlockState1 = null;
+            }
+        }
+        doubleSlabsGetTileEntity = doubleSlabsGetTileEntity1;
+        doubleSlabsGetBlockState = doubleSlabsGetBlockState1;
+    }
+
     private final CraftResultInventory resultInv;
     private final IWorldPosCallable context;
     private final CraftingInventory craftingInventory;
     private final PlayerEntity player;
     private final CraftingStationBlockEntity entity;
+
+    private static TileEntity getTileEntityAtPos(BlockPos pos, World world) {
+        try {
+            return doubleSlabsGetTileEntity != null ? (TileEntity) doubleSlabsGetTileEntity.invoke(null, pos, world) : world.getTileEntity(pos);
+        } catch (IllegalAccessException | InvocationTargetException ignored) {
+            return world.getTileEntity(pos);
+        }
+    }
+
+    private static BlockState getBlockStateAtPos(BlockPos pos, World world) {
+        try {
+            return doubleSlabsGetBlockState != null ? (BlockState) doubleSlabsGetBlockState.invoke(null, pos, world) : world.getBlockState(pos);
+        } catch (IllegalAccessException | InvocationTargetException ignored) {
+            return world.getBlockState(pos);
+        }
+    }
     
     public CraftingStationContainer(int syncId, PlayerInventory playerInventory, World world, BlockPos pos) {
         super(ImprovedStations.CRAFTING_STATION_CONTAINER, syncId);
         this.resultInv = new CraftResultInventory();
         this.player = playerInventory.player;
-        entity = (CraftingStationBlockEntity) world.getTileEntity(pos);
+        entity = (CraftingStationBlockEntity) getTileEntityAtPos(pos, world);
         this.craftingInventory = new CraftingInventory(this, 3, 3) {
             @Override
             public int getSizeInventory() {
@@ -143,7 +187,7 @@ public class CraftingStationContainer extends Container {
     @Override
     public boolean canInteractWith(PlayerEntity player) {
         return this.context.applyOrElse((world, blockPos) -> {
-            return world.getBlockState(blockPos).getBlock() instanceof CraftingStationBlock && player.getDistanceSq(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
+            return getBlockStateAtPos(blockPos, world).getBlock() instanceof CraftingStationBlock && player.getDistanceSq(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
         }, true);
     }
     
