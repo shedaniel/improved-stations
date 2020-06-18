@@ -32,24 +32,25 @@ import java.lang.reflect.Method;
 
 public class CraftingStationContainer extends Container {
 
-    private static final Method doubleSlabsGetTileEntity;
-    private static final Method doubleSlabsGetBlockState;
+    private static final Method GET_TILE_ENTITY_METHOD;
+    private static final Method GET_BLOCK_STATE_METHOD;
 
     static {
         Method doubleSlabsGetTileEntity1 = null;
         Method doubleSlabsGetBlockState1 = null;
         if (ModList.get().isLoaded("doubleslabs")) {
             try {
-                Class<?> doubleSlabsFlags = Class.forName("cjminecraft.doubleslabs.Flags");
+                Class<?> doubleSlabsFlags = Class.forName("cjminecraft.doubleslabs.api.Flags");
                 doubleSlabsGetTileEntity1 = doubleSlabsFlags.getDeclaredMethod("getTileEntityAtPos", BlockPos.class, IBlockReader.class);
                 doubleSlabsGetBlockState1 = doubleSlabsFlags.getDeclaredMethod("getBlockStateAtPos", BlockPos.class, IBlockReader.class);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
+            } catch (Throwable e) {
+                e.printStackTrace();
                 doubleSlabsGetTileEntity1 = null;
                 doubleSlabsGetBlockState1 = null;
             }
         }
-        doubleSlabsGetTileEntity = doubleSlabsGetTileEntity1;
-        doubleSlabsGetBlockState = doubleSlabsGetBlockState1;
+        GET_TILE_ENTITY_METHOD = doubleSlabsGetTileEntity1;
+        GET_BLOCK_STATE_METHOD = doubleSlabsGetBlockState1;
     }
 
     private final CraftResultInventory resultInv;
@@ -60,7 +61,7 @@ public class CraftingStationContainer extends Container {
 
     private static TileEntity getTileEntityAtPos(BlockPos pos, World world) {
         try {
-            return doubleSlabsGetTileEntity != null ? (TileEntity) doubleSlabsGetTileEntity.invoke(null, pos, world) : world.getTileEntity(pos);
+            return GET_TILE_ENTITY_METHOD != null ? (TileEntity) GET_TILE_ENTITY_METHOD.invoke(null, pos, world) : world.getTileEntity(pos);
         } catch (IllegalAccessException | InvocationTargetException ignored) {
             return world.getTileEntity(pos);
         }
@@ -68,7 +69,7 @@ public class CraftingStationContainer extends Container {
 
     private static BlockState getBlockStateAtPos(BlockPos pos, World world) {
         try {
-            return doubleSlabsGetBlockState != null ? (BlockState) doubleSlabsGetBlockState.invoke(null, pos, world) : world.getBlockState(pos);
+            return GET_BLOCK_STATE_METHOD != null ? (BlockState) GET_BLOCK_STATE_METHOD.invoke(null, pos, world) : world.getBlockState(pos);
         } catch (IllegalAccessException | InvocationTargetException ignored) {
             return world.getBlockState(pos);
         }
