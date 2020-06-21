@@ -34,7 +34,7 @@ public class MixinMusicDiscItem {
                 ItemStack itemStack = context.getStack();
                 if (!world.isClient) {
                     ((JukeboxSlabBlock) ImprovedStations.JUKEBOX_SLAB).setRecord(world, blockPos, blockState, itemStack);
-                    world.syncWorldEvent(null, 1010, blockPos, Item.getRawId((MusicDiscItem) (Object) this));
+                    world.syncWorldEvent(1010, blockPos, Item.getRawId((MusicDiscItem) (Object) this));
                     itemStack.decrement(1);
                     PlayerEntity playerEntity = context.getPlayer();
                     if (playerEntity != null) {

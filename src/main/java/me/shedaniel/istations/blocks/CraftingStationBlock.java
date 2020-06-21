@@ -117,14 +117,14 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     
     @SuppressWarnings("deprecation")
     @Override
-    public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
                 ItemScatterer.spawn(world, pos, (CraftingStationBlockEntity) blockEntity);
                 world.updateHorizontalAdjacent(pos, this);
             }
-            super.onBlockRemoved(state, world, pos, newState, moved);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
     
