@@ -10,8 +10,8 @@ import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -59,7 +59,7 @@ public class CraftingStationBlock extends ContainerBlock implements IWaterLoggab
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            IFluidState fluidState = ctx.getWorld().getFluidState(blockPos);
+            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             return this.getDefaultState().with(FACING, ctx.getPlacementHorizontalFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         }
     }
@@ -83,7 +83,7 @@ public class CraftingStationBlock extends ContainerBlock implements IWaterLoggab
     
     @SuppressWarnings("deprecation")
     @Override
-    public IFluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
     

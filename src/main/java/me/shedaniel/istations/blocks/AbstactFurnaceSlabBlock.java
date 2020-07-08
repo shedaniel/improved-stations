@@ -6,8 +6,8 @@
 package me.shedaniel.istations.blocks;
 
 import net.minecraft.block.*;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.EnumProperty;
@@ -49,7 +49,7 @@ public abstract class AbstactFurnaceSlabBlock extends AbstractFurnaceBlock imple
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            IFluidState fluidState = ctx.getWorld().getFluidState(blockPos);
+            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(FACING, ctx.getPlacementHorizontalFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             Direction direction = ctx.getFace();
             return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitVec().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
@@ -58,7 +58,7 @@ public abstract class AbstactFurnaceSlabBlock extends AbstractFurnaceBlock imple
     
     @SuppressWarnings("deprecation")
     @Override
-    public IFluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
     

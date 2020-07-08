@@ -14,14 +14,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = "improved-stations", bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ImprovedStationsClient {
     @SubscribeEvent
-    public void setupClient(FMLClientSetupEvent event) {
-        ClientRegistry.bindTileEntityRenderer(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY, CraftingStationBlockEntityRenderer::new);
-        ScreenManager.registerFactory(ImprovedStations.CRAFTING_STATION_CONTAINER, CraftingStationScreen::new);
-        RenderTypeLookup.setRenderLayer(ImprovedStations.CRAFTING_STATION, RenderType.cutout());
+    public static void setupClient(FMLClientSetupEvent event) {
+        ClientRegistry.bindTileEntityRenderer(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY.get(), CraftingStationBlockEntityRenderer::new);
+        ScreenManager.registerFactory(ImprovedStations.CRAFTING_STATION_CONTAINER.get(), CraftingStationScreen::new);
+        RenderTypeLookup.setRenderLayer(ImprovedStations.CRAFTING_STATION.get(), RenderType.getCutout());
     }
 }

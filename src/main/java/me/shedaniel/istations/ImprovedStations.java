@@ -19,19 +19,19 @@ import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -42,80 +42,51 @@ import java.util.Set;
 @Mod.EventBusSubscriber(modid = "improved-stations", bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod("improved-stations")
 public class ImprovedStations {
-    public static final ResourceLocation CRAFTING_STATION_ID = new ResourceLocation("improved-stations", "crafting_station");
-    public static final ResourceLocation CRAFTING_STATION_SLAB_ID = new ResourceLocation("improved-stations", "crafting_station_slab");
-    public static final ResourceLocation FURNACE_SLAB_ID = new ResourceLocation("improved-stations", "furnace_slab");
-    public static final ResourceLocation SMOKER_SLAB_ID = new ResourceLocation("improved-stations", "smoker_slab");
-    public static final ResourceLocation BLAST_FURNACE_SLAB_ID = new ResourceLocation("improved-stations", "blast_furnace_slab");
-    public static final ResourceLocation CRAFTING_TABLE_SLAB_ID = new ResourceLocation("improved-stations", "crafting_table_slab");
-    public static final ResourceLocation JUKEBOX_SLAB_ID = new ResourceLocation("improved-stations", "jukebox_slab");
-    public static final ResourceLocation LOOM_SLAB_ID = new ResourceLocation("improved-stations", "loom_slab");
-    public static final ResourceLocation CARTOGRAPHY_TABLE_SLAB_ID = new ResourceLocation("improved-stations", "cartography_table_slab");
-    public static final Block CRAFTING_STATION = new CraftingStationBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid());
-    public static final Block CRAFTING_STATION_SLAB = new CraftingStationSlabBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid());
-    public static final Block FURNACE_SLAB = new FurnaceSlabBlock(Block.Properties.from(Blocks.FURNACE).notSolid());
-    public static final Block SMOKER_SLAB = new SmokerSlabBlock(Block.Properties.from(Blocks.SMOKER).notSolid());
-    public static final Block BLAST_FURNACE_SLAB = new BlastFurnaceSlabBlock(Block.Properties.from(Blocks.BLAST_FURNACE).notSolid());
-    public static final Block CRAFTING_TABLE_SLAB = new CraftingTableSlabBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid());
-    public static final Block JUKEBOX_SLAB = new JukeboxSlabBlock(Block.Properties.from(Blocks.JUKEBOX).notSolid());
-    public static final Block LOOM_SLAB = new LoomSlabBlock(Block.Properties.from(Blocks.LOOM).notSolid());
-    public static final Block CARTOGRAPHY_TABLE_SLAB = new CartographyTableSlabBlock(Block.Properties.from(Blocks.CARTOGRAPHY_TABLE).notSolid());
-    public static final TileEntityType<CraftingStationBlockEntity> CRAFTING_STATION_BLOCK_ENTITY = TileEntityType.Builder.create(CraftingStationBlockEntity::new, CRAFTING_STATION, CRAFTING_STATION_SLAB).build(null);
-    public static final ContainerType<CraftingStationContainer> CRAFTING_STATION_CONTAINER = IForgeContainerType.create((windowId, inv, data) -> {
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "improved-stations");
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, "improved-stations");
+    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, "improved-stations");
+    public static final RegistryObject<Block> CRAFTING_STATION = BLOCKS.register("crafting_station", () -> new CraftingStationBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid()));
+    public static final RegistryObject<Block> CRAFTING_STATION_SLAB = BLOCKS.register("crafting_station_slab", () -> new CraftingStationSlabBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid()));
+    public static final RegistryObject<Block> FURNACE_SLAB = BLOCKS.register("furnace_slab", () -> new FurnaceSlabBlock(Block.Properties.from(Blocks.FURNACE).notSolid()));
+    public static final RegistryObject<Block> SMOKER_SLAB = BLOCKS.register("smoker_slab", () -> new SmokerSlabBlock(Block.Properties.from(Blocks.SMOKER).notSolid()));
+    public static final RegistryObject<Block> BLAST_FURNACE_SLAB = BLOCKS.register("blast_furnace_slab", () -> new BlastFurnaceSlabBlock(Block.Properties.from(Blocks.BLAST_FURNACE).notSolid()));
+    public static final RegistryObject<Block> CRAFTING_TABLE_SLAB = BLOCKS.register("crafting_table_slab", () -> new CraftingTableSlabBlock(Block.Properties.from(Blocks.CRAFTING_TABLE).notSolid()));
+    public static final RegistryObject<Block> JUKEBOX_SLAB = BLOCKS.register("jukebox_slab", () -> new JukeboxSlabBlock(Block.Properties.from(Blocks.JUKEBOX).notSolid()));
+    public static final RegistryObject<Block> LOOM_SLAB = BLOCKS.register("loom_slab", () -> new LoomSlabBlock(Block.Properties.from(Blocks.LOOM).notSolid()));
+    public static final RegistryObject<Block> CARTOGRAPHY_TABLE_SLAB = BLOCKS.register("cartography_table_slab", () -> new CartographyTableSlabBlock(Block.Properties.from(Blocks.CARTOGRAPHY_TABLE).notSolid()));
+    public static final RegistryObject<TileEntityType<CraftingStationBlockEntity>> CRAFTING_STATION_BLOCK_ENTITY = TILE_ENTITY_TYPES.register("crafting_station", () -> TileEntityType.Builder.create(CraftingStationBlockEntity::new, CRAFTING_STATION.get(), CRAFTING_STATION_SLAB.get()).build(null));
+    public static final RegistryObject<ContainerType<CraftingStationContainer>> CRAFTING_STATION_CONTAINER = CONTAINER_TYPES.register("crafting_station", () -> IForgeContainerType.create((windowId, inv, data) -> {
         return new CraftingStationContainer(windowId, inv, inv.player.world, data.readBlockPos());
-    });
+    }));
     
     public ImprovedStations() {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().register(new ImprovedStationsClient()));
         MinecraftForge.EVENT_BUS.addListener(ImprovedStations::rightClickBlock);
-    }
-    
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(
-                CRAFTING_STATION.setRegistryName(CRAFTING_STATION_ID),
-                CRAFTING_STATION_SLAB.setRegistryName(CRAFTING_STATION_SLAB_ID),
-                FURNACE_SLAB.setRegistryName(FURNACE_SLAB_ID),
-                SMOKER_SLAB.setRegistryName(SMOKER_SLAB_ID),
-                BLAST_FURNACE_SLAB.setRegistryName(BLAST_FURNACE_SLAB_ID),
-                CRAFTING_TABLE_SLAB.setRegistryName(CRAFTING_TABLE_SLAB_ID),
-                JUKEBOX_SLAB.setRegistryName(JUKEBOX_SLAB_ID),
-                LOOM_SLAB.setRegistryName(LOOM_SLAB_ID),
-                CARTOGRAPHY_TABLE_SLAB.setRegistryName(CARTOGRAPHY_TABLE_SLAB_ID)
-        );
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
     
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                new BlockItem(CRAFTING_STATION, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_STATION_ID),
-                new BlockItem(CRAFTING_STATION_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_STATION_SLAB_ID),
-                new BlockItem(FURNACE_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(FURNACE_SLAB_ID),
-                new BlockItem(SMOKER_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(SMOKER_SLAB_ID),
-                new BlockItem(BLAST_FURNACE_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(BLAST_FURNACE_SLAB_ID),
-                new BlockItem(CRAFTING_TABLE_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_TABLE_SLAB_ID),
-                new BlockItem(JUKEBOX_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(JUKEBOX_SLAB_ID),
-                new BlockItem(LOOM_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(LOOM_SLAB_ID),
-                new BlockItem(CARTOGRAPHY_TABLE_SLAB, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CARTOGRAPHY_TABLE_SLAB_ID)
-        );
-    }
-    
-    @SubscribeEvent
-    public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(
-                CRAFTING_STATION_CONTAINER.setRegistryName(CRAFTING_STATION_ID)
+                new BlockItem(CRAFTING_STATION.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_STATION.get().getRegistryName()),
+                new BlockItem(CRAFTING_STATION_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_STATION_SLAB.get().getRegistryName()),
+                new BlockItem(FURNACE_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(FURNACE_SLAB.get().getRegistryName()),
+                new BlockItem(SMOKER_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(SMOKER_SLAB.get().getRegistryName()),
+                new BlockItem(BLAST_FURNACE_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(BLAST_FURNACE_SLAB.get().getRegistryName()),
+                new BlockItem(CRAFTING_TABLE_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CRAFTING_TABLE_SLAB.get().getRegistryName()),
+                new BlockItem(JUKEBOX_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(JUKEBOX_SLAB.get().getRegistryName()),
+                new BlockItem(LOOM_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(LOOM_SLAB.get().getRegistryName()),
+                new BlockItem(CARTOGRAPHY_TABLE_SLAB.get(), new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName(CARTOGRAPHY_TABLE_SLAB.get().getRegistryName())
         );
     }
     
     @SubscribeEvent
     public static void registerTileEntityTypes(RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(
-                CRAFTING_STATION_BLOCK_ENTITY.setRegistryName(CRAFTING_STATION_ID)
-        );
-        applyMoreBlocks(TileEntityType.FURNACE, ImprovedStations.FURNACE_SLAB);
-        applyMoreBlocks(TileEntityType.SMOKER, ImprovedStations.SMOKER_SLAB);
-        applyMoreBlocks(TileEntityType.BLAST_FURNACE, ImprovedStations.BLAST_FURNACE_SLAB);
-        applyMoreBlocks(TileEntityType.JUKEBOX, ImprovedStations.JUKEBOX_SLAB);
+        applyMoreBlocks(TileEntityType.FURNACE, ImprovedStations.FURNACE_SLAB.get());
+        applyMoreBlocks(TileEntityType.SMOKER, ImprovedStations.SMOKER_SLAB.get());
+        applyMoreBlocks(TileEntityType.BLAST_FURNACE, ImprovedStations.BLAST_FURNACE_SLAB.get());
+        applyMoreBlocks(TileEntityType.JUKEBOX, ImprovedStations.JUKEBOX_SLAB.get());
     }
     
     private static void applyMoreBlocks(TileEntityType<?> type, Block... blocks) {
@@ -139,9 +110,9 @@ public class ImprovedStations {
             World world = event.getWorld();
             BlockPos blockPos = event.getPos();
             BlockState blockState = world.getBlockState(blockPos);
-            if (blockState.getBlock() == ImprovedStations.JUKEBOX_SLAB && !blockState.get(JukeboxSlabBlock.HAS_RECORD)) {
+            if (blockState.getBlock() == ImprovedStations.JUKEBOX_SLAB.get() && !blockState.get(JukeboxSlabBlock.HAS_RECORD)) {
                 if (!world.isRemote) {
-                    ((JukeboxSlabBlock) ImprovedStations.JUKEBOX_SLAB).insertRecord(world, blockPos, blockState, itemStack);
+                    ((JukeboxSlabBlock) ImprovedStations.JUKEBOX_SLAB.get()).insertRecord(world, blockPos, blockState, itemStack);
                     world.playEvent(null, 1010, blockPos, Item.getIdFromItem(itemStack.getItem()));
                     itemStack.shrink(1);
                     PlayerEntity playerEntity = event.getPlayer();

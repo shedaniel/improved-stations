@@ -8,8 +8,8 @@ package me.shedaniel.istations.blocks;
 import me.shedaniel.istations.ImprovedStations;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.container.CartographyContainer;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
@@ -60,7 +60,7 @@ public class CartographyTableSlabBlock extends CartographyTableBlock implements 
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            IFluidState fluidState = ctx.getWorld().getFluidState(blockPos);
+            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             Direction direction = ctx.getFace();
             return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitVec().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
@@ -69,7 +69,7 @@ public class CartographyTableSlabBlock extends CartographyTableBlock implements 
     
     @SuppressWarnings("deprecation")
     @Override
-    public IFluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
     
@@ -118,7 +118,7 @@ public class CartographyTableSlabBlock extends CartographyTableBlock implements 
                 @Override
                 public boolean canInteractWith(PlayerEntity playerIn) {
                     IWorldPosCallable callable = ObfuscationReflectionHelper.getPrivateValue(CartographyContainer.class, this, "field_216999_d");
-                    return super.canInteractWith(playerIn) || isWithinUsableDistance(callable, playerIn, ImprovedStations.CARTOGRAPHY_TABLE_SLAB);
+                    return super.canInteractWith(playerIn) || isWithinUsableDistance(callable, playerIn, ImprovedStations.CARTOGRAPHY_TABLE_SLAB.get());
                 }
             };
         }, TITLE);

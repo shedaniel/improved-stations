@@ -36,11 +36,11 @@ public class ImprovedStationsJEIPlugin implements IModPlugin {
     
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_STATION), VanillaRecipeCategoryUid.CRAFTING);
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_STATION_SLAB), VanillaRecipeCategoryUid.CRAFTING);
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_TABLE_SLAB), VanillaRecipeCategoryUid.CRAFTING);
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.FURNACE_SLAB), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.SMOKER_SLAB), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
-        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.BLAST_FURNACE_SLAB), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_STATION.get()), VanillaRecipeCategoryUid.CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_STATION_SLAB.get()), VanillaRecipeCategoryUid.CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.CRAFTING_TABLE_SLAB.get()), VanillaRecipeCategoryUid.CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.FURNACE_SLAB.get()), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.SMOKER_SLAB.get()), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst(new ItemStack(ImprovedStations.BLAST_FURNACE_SLAB.get()), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.FUEL);
     }
 }

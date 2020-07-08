@@ -7,6 +7,7 @@ package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.containers.CraftingStationContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IRecipeHelperPopulator;
@@ -15,6 +16,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -29,7 +32,7 @@ public class CraftingStationBlockEntity extends LockableTileEntity implements IR
     protected Inventory inventory;
     
     public CraftingStationBlockEntity() {
-        super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY);
+        super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY.get());
         this.inventory = new Inventory(9);
     }
     
@@ -50,8 +53,8 @@ public class CraftingStationBlockEntity extends LockableTileEntity implements IR
     }
     
     @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
+    public void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
         this.inventory = new Inventory(9);
         this.inventory.deserializeNBT(tag.getCompound("inv"));
     }
@@ -121,6 +124,26 @@ public class CraftingStationBlockEntity extends LockableTileEntity implements IR
         for (ItemStack stack : inventory.getStacks()) {
             helper.accountStack(stack);
         }
+    }
+    
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+    }
+    
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return write(new CompoundNBT());
+    }
+    
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        read(state, tag);
+    }
+    
+    @Override
+    public void onDataPacket(NetworkManager manager, SUpdateTileEntityPacket packet) {
+        handleUpdateTag(getBlockState(), packet.getNbtCompound());
     }
     
     private static class Inventory extends ItemStackHandler {

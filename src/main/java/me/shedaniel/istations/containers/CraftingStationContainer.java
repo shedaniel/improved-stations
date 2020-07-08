@@ -31,10 +31,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class CraftingStationContainer extends Container {
-
+    
     private static final Method GET_TILE_ENTITY_METHOD;
     private static final Method GET_BLOCK_STATE_METHOD;
-
+    
     static {
         Method doubleSlabsGetTileEntity1 = null;
         Method doubleSlabsGetBlockState1 = null;
@@ -52,13 +52,13 @@ public class CraftingStationContainer extends Container {
         GET_TILE_ENTITY_METHOD = doubleSlabsGetTileEntity1;
         GET_BLOCK_STATE_METHOD = doubleSlabsGetBlockState1;
     }
-
+    
     private final CraftResultInventory resultInv;
     private final IWorldPosCallable context;
     private final CraftingInventory craftingInventory;
     private final PlayerEntity player;
     private final CraftingStationBlockEntity entity;
-
+    
     private static TileEntity getTileEntityAtPos(BlockPos pos, World world) {
         try {
             return GET_TILE_ENTITY_METHOD != null ? (TileEntity) GET_TILE_ENTITY_METHOD.invoke(null, pos, world) : world.getTileEntity(pos);
@@ -66,7 +66,7 @@ public class CraftingStationContainer extends Container {
             return world.getTileEntity(pos);
         }
     }
-
+    
     private static BlockState getBlockStateAtPos(BlockPos pos, World world) {
         try {
             return GET_BLOCK_STATE_METHOD != null ? (BlockState) GET_BLOCK_STATE_METHOD.invoke(null, pos, world) : world.getBlockState(pos);
@@ -76,7 +76,7 @@ public class CraftingStationContainer extends Container {
     }
     
     public CraftingStationContainer(int syncId, PlayerInventory playerInventory, World world, BlockPos pos) {
-        super(ImprovedStations.CRAFTING_STATION_CONTAINER, syncId);
+        super(ImprovedStations.CRAFTING_STATION_CONTAINER.get(), syncId);
         this.resultInv = new CraftResultInventory();
         this.player = playerInventory.player;
         entity = (CraftingStationBlockEntity) getTileEntityAtPos(pos, world);

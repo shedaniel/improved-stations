@@ -13,7 +13,6 @@ import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -23,6 +22,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public class CraftingStationBlockEntityRenderer extends TileEntityRenderer<Craft
             blockEntity = (CraftingStationBlockEntity) blockEntity.getWorld().getTileEntity(blockEntity.getPos());
             BlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
             Direction o = state.get(HorizontalBlock.HORIZONTAL_FACING);
-            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.has(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
+            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.func_235901_b_(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++) {
                     int slotId = x + y * 3;
@@ -77,7 +77,7 @@ public class CraftingStationBlockEntityRenderer extends TileEntityRenderer<Craft
                     } else {
                         matrices.scale(.5f, .5f, .5f);
                     }
-                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.DEFAULT_LIGHT, bakedModel);
+                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.NO_OVERLAY, bakedModel);
                     matrices.pop();
                 }
         } catch (Exception e) {

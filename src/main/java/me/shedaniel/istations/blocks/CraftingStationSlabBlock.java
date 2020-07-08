@@ -8,8 +8,8 @@ package me.shedaniel.istations.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.EnumProperty;
@@ -48,7 +48,7 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            IFluidState fluidState = ctx.getWorld().getFluidState(blockPos);
+            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
             BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(FACING, ctx.getPlacementHorizontalFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             Direction direction = ctx.getFace();
             return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitVec().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
