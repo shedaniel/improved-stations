@@ -9,12 +9,13 @@ import me.shedaniel.istations.blocks.*;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import me.shedaniel.istations.containers.CraftingStationScreenHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.container.BlockContext;
+import net.minecraft.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -42,6 +43,10 @@ public class ImprovedStations implements ModInitializer {
     public static final Block LOOM_SLAB = new LoomSlabBlock(FabricBlockSettings.copy(Blocks.LOOM).nonOpaque());
     public static final Block CARTOGRAPHY_TABLE_SLAB = new CartographyTableSlabBlock(FabricBlockSettings.copy(Blocks.CARTOGRAPHY_TABLE).nonOpaque());
     public static final BlockEntityType<CraftingStationBlockEntity> CRAFTING_STATION_BLOCK_ENTITY = BlockEntityType.Builder.create(CraftingStationBlockEntity::new, CRAFTING_STATION, CRAFTING_STATION_SLAB).build(null);
+    public static final ContainerType<CraftingStationScreenHandler> CRAFTING_STATION_TYPE = ScreenHandlerRegistry.registerExtended(CRAFTING_STATION_ID, (syncId, playerInventory, buf) -> {
+        BlockPos pos = buf.readBlockPos();
+        return new CraftingStationScreenHandler(syncId, playerInventory, (CraftingStationBlockEntity) playerInventory.player.world.getBlockEntity(pos), BlockContext.create(playerInventory.player.world, pos));
+    });
     
     @Override
     public void onInitialize() {
@@ -73,9 +78,5 @@ public class ImprovedStations implements ModInitializer {
         Registry.register(Registry.ITEM, CARTOGRAPHY_TABLE_SLAB_ID, new BlockItem(CARTOGRAPHY_TABLE_SLAB, new Item.Settings().group(ItemGroup.DECORATIONS)));
         
         Registry.register(Registry.BLOCK_ENTITY_TYPE, CRAFTING_STATION_ID, CRAFTING_STATION_BLOCK_ENTITY);
-        ContainerProviderRegistry.INSTANCE.registerFactory(CRAFTING_STATION_ID, (syncId, identifier, playerEntity, packetByteBuf) -> {
-            BlockPos pos = packetByteBuf.readBlockPos();
-            return new CraftingStationScreenHandler(syncId, playerEntity.inventory, (CraftingStationBlockEntity) playerEntity.world.getBlockEntity(pos), BlockContext.create(playerEntity.world, pos));
-        });
     }
 }

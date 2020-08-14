@@ -6,6 +6,7 @@
 package me.shedaniel.istations.rei;
 
 import me.shedaniel.istations.ImprovedStations;
+import me.shedaniel.rei.api.BuiltinPlugin;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
@@ -19,9 +20,9 @@ public class ImprovedStationsREIPlugin implements REIPluginV0 {
     
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
-        recipeHelper.registerWorkingStations(new Identifier("minecraft", "plugins/crafting"), EntryStack.create(ImprovedStations.CRAFTING_STATION), EntryStack.create(ImprovedStations.CRAFTING_STATION_SLAB), EntryStack.create(ImprovedStations.CRAFTING_TABLE_SLAB));
-        recipeHelper.registerWorkingStations(new Identifier("minecraft", "plugins/smelting"), EntryStack.create(ImprovedStations.FURNACE_SLAB));
-        recipeHelper.registerWorkingStations(new Identifier("minecraft", "plugins/smoking"), EntryStack.create(ImprovedStations.SMOKER_SLAB));
-        recipeHelper.registerWorkingStations(new Identifier("minecraft", "plugins/blasting"), EntryStack.create(ImprovedStations.BLAST_FURNACE_SLAB));
+        recipeHelper.registerWorkingStations(BuiltinPlugin.CRAFTING, EntryStack.create(ImprovedStations.CRAFTING_STATION), EntryStack.create(ImprovedStations.CRAFTING_STATION_SLAB), EntryStack.create(ImprovedStations.CRAFTING_TABLE_SLAB));
+        recipeHelper.registerWorkingStations(BuiltinPlugin.SMELTING, EntryStack.create(ImprovedStations.FURNACE_SLAB));
+        recipeHelper.registerWorkingStations(BuiltinPlugin.SMOKING, EntryStack.create(ImprovedStations.SMOKER_SLAB));
+        recipeHelper.registerWorkingStations(BuiltinPlugin.BLASTING, EntryStack.create(ImprovedStations.BLAST_FURNACE_SLAB));
     }
 }

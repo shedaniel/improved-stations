@@ -6,18 +6,19 @@
 package me.shedaniel.istations.rei;
 
 import me.shedaniel.istations.containers.CraftingStationScreenHandler;
+import me.shedaniel.rei.api.BuiltinPlugin;
 import me.shedaniel.rei.server.ContainerInfo;
 import me.shedaniel.rei.server.ContainerInfoHandler;
 import me.shedaniel.rei.server.RecipeFinder;
+import net.minecraft.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 public class ImprovedStationsREIContainerInfo implements Runnable {
     @Override
     public void run() {
-        ContainerInfoHandler.registerContainerInfo(new Identifier("minecraft", "plugins/crafting"), new ContainerInfo<CraftingStationScreenHandler>() {
+        ContainerInfoHandler.registerContainerInfo(BuiltinPlugin.CRAFTING, new ContainerInfo<CraftingStationScreenHandler>() {
             @Override
-            public Class<? extends CraftingStationScreenHandler> getContainerClass() {
+            public Class<? extends Container> getContainerClass() {
                 return CraftingStationScreenHandler.class;
             }
             
@@ -34,11 +35,6 @@ public class ImprovedStationsREIContainerInfo implements Runnable {
             @Override
             public int getCraftingHeight(CraftingStationScreenHandler container) {
                 return 3;
-            }
-            
-            @Override
-            public void clearCraftingSlots(CraftingStationScreenHandler container) {
-                container.clearCraftingSlots();
             }
             
             @Override

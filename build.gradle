@@ -39,8 +39,12 @@ dependencies {
     modRuntime ("io.github.prospector:modmenu:${project.modmenu_version}") {
         transitive = false
     }
-	modCompileOnly ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
-	modRuntime ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}")
+	modCompileOnly ("me.shedaniel:RoughlyEnoughItems-api:${project.roughlyenoughitems}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+	modRuntime ("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     compileOnly 'org.jetbrains:annotations:19.0.0'
 //    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
 //        transitive = false

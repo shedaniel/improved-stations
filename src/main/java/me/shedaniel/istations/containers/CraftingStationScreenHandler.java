@@ -5,6 +5,7 @@
 
 package me.shedaniel.istations.containers;
 
+import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.CraftingStationBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import net.minecraft.container.BlockContext;
@@ -35,7 +36,7 @@ public class CraftingStationScreenHandler extends Container {
     private final PlayerEntity player;
     
     public CraftingStationScreenHandler(int syncId, PlayerInventory playerInventory, CraftingStationBlockEntity entity, BlockContext blockContext) {
-        super(null, syncId);
+        super(ImprovedStations.CRAFTING_STATION_TYPE, syncId);
         this.resultInv = new CraftingResultInventory();
         this.player = playerInventory.player;
         this.craftingInventory = new CraftingInventory(this, 3, 3) {

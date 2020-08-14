@@ -5,12 +5,12 @@
 
 package me.shedaniel.istations.blocks;
 
-import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import me.shedaniel.istations.containers.ExtendedScreenHandlerFactoryWrapped;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.container.Container;
+import net.minecraft.container.NameableContainerFactory;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +31,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class CraftingStationBlock extends BlockWithEntity implements Waterloggable {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
@@ -90,9 +91,15 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!world.isClient)
-            ContainerProviderRegistry.INSTANCE.openContainer(ImprovedStations.CRAFTING_STATION_ID, player, buf -> buf.writeBlockPos(pos));
+        if (!world.isClient) {
+            player.openContainer(state.createScreenHandlerFactory(world, pos));
+        }
         return ActionResult.SUCCESS;
+    }
+    
+    @Override
+    public @Nullable NameableContainerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+        return new ExtendedScreenHandlerFactoryWrapped(super.createScreenHandlerFactory(state, world, pos), (serverPlayerEntity, packetByteBuf) -> packetByteBuf.writeBlockPos(pos));
     }
     
     @Override

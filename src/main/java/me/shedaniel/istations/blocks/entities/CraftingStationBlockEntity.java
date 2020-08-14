@@ -6,9 +6,11 @@
 package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
+import me.shedaniel.istations.containers.CraftingStationScreenHandler;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,7 +41,7 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     
     @Override
     protected Container createContainer(int syncId, PlayerInventory playerInventory) {
-        return null;
+        return new CraftingStationScreenHandler(syncId, playerInventory, this, BlockContext.EMPTY);
     }
     
     @Override

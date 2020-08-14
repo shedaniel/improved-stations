@@ -18,12 +18,7 @@ public class CraftingStationScreen extends ContainerScreen<CraftingStationScreen
     
     public CraftingStationScreen(CraftingStationScreenHandler container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
-    }
-    
-    @Override
-    protected void drawForeground(MatrixStack stack, int mouseX, int mouseY) {
-        this.textRenderer.draw(stack, this.title, 28.0F, 6.0F, 4210752);
-        this.textRenderer.draw(stack, this.playerInventory.getDisplayName(), 8.0F, (float) (this.containerHeight - 96 + 2), 4210752);
+        this.titleX = 28;
     }
     
     @Override
