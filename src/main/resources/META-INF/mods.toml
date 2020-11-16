@@ -17,6 +17,7 @@ logoFile="improved-stations-icon.png" #optional
 credits="" #optional
 # A text field displayed in the mod UI
 authors="shedaniel" #optional
+license="MIT"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod

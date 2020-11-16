@@ -38,7 +38,7 @@ public class CraftingStationBlockEntityRenderer extends TileEntityRenderer<Craft
             blockEntity = (CraftingStationBlockEntity) blockEntity.getWorld().getTileEntity(blockEntity.getPos());
             BlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
             Direction o = state.get(HorizontalBlock.HORIZONTAL_FACING);
-            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.func_235901_b_(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
+            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.hasProperty(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++) {
                     int slotId = x + y * 3;
@@ -70,7 +70,7 @@ public class CraftingStationBlockEntityRenderer extends TileEntityRenderer<Craft
                     } else {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, 1d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
                     }
-                    if (!bakedModel.func_230044_c_()) {
+                    if (!bakedModel.isGui3d()) {
                         matrices.translate(0, .55 / 16d, -.5d / 16d);
                         matrices.rotate(Vector3f.XP.rotationDegrees(90));
                         matrices.scale(.3f, .3f, .3f);

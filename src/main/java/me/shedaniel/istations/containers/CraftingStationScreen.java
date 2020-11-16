@@ -24,25 +24,24 @@ public class CraftingStationScreen extends ContainerScreen<CraftingStationContai
     }
     
     @Override
-    protected void func_230451_b_(MatrixStack matrices, int mouseX, int mouseY) {
-        this.font.func_238422_b_(matrices, this.title, 28.0F, 6.0F, 4210752);
-        this.font.func_238422_b_(matrices, this.playerInventory.getDisplayName(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
+    protected void init() {
+        super.init();
+        this.titleX = 29;
     }
     
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
-        this.func_230459_a_(matrices, mouseX, mouseY);
+        this.renderHoveredTooltip(matrices, mouseX, mouseY);
     }
     
     @Override
-    protected void func_230450_a_(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(BG_TEX);
         int i = this.guiLeft;
         int j = (this.height - this.ySize) / 2;
         this.blit(p_230450_1_, i, j, 0, 0, this.xSize, this.ySize);
     }
-    
 }

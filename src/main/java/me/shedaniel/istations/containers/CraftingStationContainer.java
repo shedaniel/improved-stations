@@ -252,7 +252,7 @@ public class CraftingStationContainer extends Container {
         }
         
         private static void updateResult(int syncId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftResultInventory resultInventory) {
-            WorkbenchContainer.func_217066_a(syncId, world, player, craftingInventory, resultInventory);
+            WorkbenchContainer.updateCraftingResult(syncId, world, player, craftingInventory, resultInventory);
         }
     }
 }
