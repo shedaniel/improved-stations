@@ -1,0 +1,11 @@
+{
+  "block.improved-stations.crafting_station": "Станция для крафта",
+  "block.improved-stations.crafting_station_slab": "Станция для крафта в виде плиты",
+  "block.improved-stations.furnace_slab": "Печь в виде плиты",
+  "block.improved-stations.smoker_slab": "Коптильня в виде плиты",
+  "block.improved-stations.blast_furnace_slab": "Плавильная печь в виде плиты",
+  "block.improved-stations.crafting_table_slab": "Верстак в виде плиты",
+  "block.improved-stations.jukebox_slab": "Музыкальный автомат в виде плиты",
+  "block.improved-stations.loom_slab": "Ткацкий станок в виде плиты",
+  "block.improved-stations.cartography_table_slab": "Стол картографа в виде плиты"
+}
