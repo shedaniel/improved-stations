@@ -28,16 +28,12 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = "improved-stations", bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod("improved-stations")
@@ -90,18 +86,9 @@ public class ImprovedStations {
     }
     
     private static void applyMoreBlocks(TileEntityType<?> type, Block... blocks) {
-        try {
-            Field field = ObfuscationReflectionHelper.findField(TileEntityType.class, "field_223046_I");
-            field.setAccessible(true);
-            ArrayList<Block> list = Lists.newArrayList((Set<Block>) field.get(type));
-            list.addAll(Arrays.asList(blocks));
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            field.set(type, ImmutableSet.copyOf(list));
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
+        ArrayList<Block> list = Lists.newArrayList(type.validBlocks);
+        list.addAll(Arrays.asList(blocks));
+        type.validBlocks = ImmutableSet.copyOf(list);
     }
     
     public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
