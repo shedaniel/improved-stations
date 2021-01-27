@@ -1,0 +1,11 @@
+{
+  "block.improved-stations.crafting_station": "제작소",
+  "block.improved-stations.crafting_station_slab": "제작소 반 블록",
+  "block.improved-stations.furnace_slab": "화로 반 블록",
+  "block.improved-stations.smoker_slab": "훈연기 반 블록",
+  "block.improved-stations.blast_furnace_slab": "용광로 반 블록",
+  "block.improved-stations.crafting_table_slab": "제작대 반 블록",
+  "block.improved-stations.jukebox_slab": "주크박스 반 블록",
+  "block.improved-stations.loom_slab": "베틀 반 블록",
+  "block.improved-stations.cartography_table_slab": "지도 제작대 반 블록"
+}
