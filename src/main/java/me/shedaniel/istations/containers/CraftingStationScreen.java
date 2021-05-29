@@ -30,8 +30,8 @@ public class CraftingStationScreen extends ContainerScreen<CraftingStationScreen
     
     @Override
     protected void drawBackground(MatrixStack stack, float delta, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(BG_TEX);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, BG_TEX);
         int i = this.x;
         int j = (this.height - this.containerHeight) / 2;
         this.drawTexture(stack, i, j, 0, 0, this.containerWidth, this.containerHeight);

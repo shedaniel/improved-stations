@@ -22,6 +22,7 @@ import net.minecraft.recipe.RecipeInputProvider;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;
 
@@ -29,8 +30,8 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     
     protected DefaultedList<ItemStack> inventory;
     
-    public CraftingStationBlockEntity() {
-        super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY);
+    public CraftingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY, blockPos, blockState);
         this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
     }
     
@@ -45,8 +46,8 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     }
     
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
         this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
         Inventories.fromTag(tag, this.inventory);
     }
@@ -54,7 +55,7 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        Inventories.toTag(tag, this.inventory);
+        Inventories.writeNbt(tag, this.inventory);
         return tag;
     }
     
@@ -118,7 +119,7 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(getCachedState(), compoundTag);
+        fromTag(compoundTag);
     }
     
     @Override

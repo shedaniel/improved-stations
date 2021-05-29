@@ -10,6 +10,7 @@ import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import me.shedaniel.istations.containers.CraftingStationScreenHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -42,7 +43,7 @@ public class ImprovedStations implements ModInitializer {
     public static final Block JUKEBOX_SLAB = new JukeboxSlabBlock(FabricBlockSettings.copy(Blocks.JUKEBOX).nonOpaque());
     public static final Block LOOM_SLAB = new LoomSlabBlock(FabricBlockSettings.copy(Blocks.LOOM).nonOpaque());
     public static final Block CARTOGRAPHY_TABLE_SLAB = new CartographyTableSlabBlock(FabricBlockSettings.copy(Blocks.CARTOGRAPHY_TABLE).nonOpaque());
-    public static final BlockEntityType<CraftingStationBlockEntity> CRAFTING_STATION_BLOCK_ENTITY = BlockEntityType.Builder.create(CraftingStationBlockEntity::new, CRAFTING_STATION, CRAFTING_STATION_SLAB).build(null);
+    public static final BlockEntityType<CraftingStationBlockEntity> CRAFTING_STATION_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(CraftingStationBlockEntity::new, CRAFTING_STATION, CRAFTING_STATION_SLAB).build(null);
     public static final ContainerType<CraftingStationScreenHandler> CRAFTING_STATION_TYPE = ScreenHandlerRegistry.registerExtended(CRAFTING_STATION_ID, (syncId, playerInventory, buf) -> {
         BlockPos pos = buf.readBlockPos();
         return new CraftingStationScreenHandler(syncId, playerInventory, (CraftingStationBlockEntity) playerInventory.player.world.getBlockEntity(pos), BlockContext.create(playerInventory.player.world, pos));

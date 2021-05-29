@@ -83,9 +83,10 @@ public class CraftingStationBlock extends BlockWithEntity implements Waterloggab
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
     
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView view) {
-        return new CraftingStationBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CraftingStationBlockEntity(pos, state);
     }
     
     @SuppressWarnings("deprecation")

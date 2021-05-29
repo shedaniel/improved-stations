@@ -15,8 +15,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,9 +26,8 @@ import net.minecraft.util.math.Direction;
 
 import java.util.Objects;
 
-public class CraftingStationBlockEntityRenderer extends BlockEntityRenderer<CraftingStationBlockEntity> {
-    public CraftingStationBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
+public class CraftingStationBlockEntityRenderer implements BlockEntityRenderer<CraftingStationBlockEntity> {
+    public CraftingStationBlockEntityRenderer(BlockEntityRendererFactory.Context dispatcher) {
     }
     
     @Override
@@ -62,7 +61,7 @@ public class CraftingStationBlockEntityRenderer extends BlockEntityRenderer<Craf
                     ItemStack stack = blockEntity.getInvStack(slotId);
                     if (stack.isEmpty())
                         continue;
-                    BakedModel bakedModel = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, null, null);
+                    BakedModel bakedModel = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, null, null, 0);
                     matrices.push();
                     if (slabType == SlabType.BOTTOM) {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, .5d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);

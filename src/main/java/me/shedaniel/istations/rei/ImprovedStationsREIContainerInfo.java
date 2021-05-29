@@ -41,7 +41,7 @@ public class ImprovedStationsREIContainerInfo implements Runnable {
             public void populateRecipeFinder(CraftingStationScreenHandler container, RecipeFinder recipeFinder) {
                 container.populateRecipeFinder(new net.minecraft.recipe.RecipeFinder() {
                     @Override
-                    public void method_20478(ItemStack itemStack, int i) {
+                    public void addInput(ItemStack itemStack, int i) {
                         recipeFinder.addItem(itemStack, i);
                     }
                 });

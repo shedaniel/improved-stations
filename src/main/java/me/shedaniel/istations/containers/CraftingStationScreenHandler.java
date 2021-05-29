@@ -160,7 +160,7 @@ public class CraftingStationScreenHandler extends Container {
     
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.context.run((world, blockPos) -> world.getBlockState(blockPos).getBlock() instanceof CraftingStationBlock && player.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D, true);
+        return this.context.get((world, blockPos) -> world.getBlockState(blockPos).getBlock() instanceof CraftingStationBlock && player.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D, true);
     }
     
     @Override
@@ -203,9 +203,9 @@ public class CraftingStationScreenHandler extends Container {
                 return ItemStack.EMPTY;
             }
             
-            ItemStack itemStack3 = slot.onTakeItem(player, itemStack2);
+            slot.onTakeItem(player, itemStack2);
             if (invSlot == 0) {
-                player.dropItem(itemStack3, false);
+                player.dropItem(itemStack2, false);
             }
         }
         
