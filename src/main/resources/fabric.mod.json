@@ -21,10 +21,8 @@
     "client": [
       "me.shedaniel.istations.ImprovedStationsClient"
     ],
-    "rei_containers": [
-      "me.shedaniel.istations.rei.ImprovedStationsREIContainerInfo"
-    ],
-    "rei_plugins_v0": [
+    "rei": [
+      "me.shedaniel.istations.rei.ImprovedStationsREIContainerInfo",
       "me.shedaniel.istations.rei.ImprovedStationsREIPlugin"
     ]
   },

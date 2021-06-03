@@ -31,9 +31,9 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modCompileOnly ("me.shedaniel:RoughlyEnoughItems-api:${project.roughlyenoughitems}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.roughlyenoughitems}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.roughlyenoughitems}"
+    modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.roughlyenoughitems}"
     compileOnly 'org.jetbrains:annotations:19.0.0'
 //    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
 //        transitive = false

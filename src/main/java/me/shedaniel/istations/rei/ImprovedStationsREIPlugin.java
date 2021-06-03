@@ -6,23 +6,17 @@
 package me.shedaniel.istations.rei;
 
 import me.shedaniel.istations.ImprovedStations;
-import me.shedaniel.rei.api.BuiltinPlugin;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeHelper;
-import me.shedaniel.rei.api.plugins.REIPluginV0;
-import net.minecraft.util.Identifier;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 
-public class ImprovedStationsREIPlugin implements REIPluginV0 {
+public class ImprovedStationsREIPlugin implements REIClientPlugin {
     @Override
-    public Identifier getPluginIdentifier() {
-        return new Identifier("improved-stations", "rei_plugin");
-    }
-    
-    @Override
-    public void registerOthers(RecipeHelper recipeHelper) {
-        recipeHelper.registerWorkingStations(BuiltinPlugin.CRAFTING, EntryStack.create(ImprovedStations.CRAFTING_STATION), EntryStack.create(ImprovedStations.CRAFTING_STATION_SLAB), EntryStack.create(ImprovedStations.CRAFTING_TABLE_SLAB));
-        recipeHelper.registerWorkingStations(BuiltinPlugin.SMELTING, EntryStack.create(ImprovedStations.FURNACE_SLAB));
-        recipeHelper.registerWorkingStations(BuiltinPlugin.SMOKING, EntryStack.create(ImprovedStations.SMOKER_SLAB));
-        recipeHelper.registerWorkingStations(BuiltinPlugin.BLASTING, EntryStack.create(ImprovedStations.BLAST_FURNACE_SLAB));
+    public void registerCategories(CategoryRegistry registry) {
+        registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(ImprovedStations.CRAFTING_STATION), EntryStacks.of(ImprovedStations.CRAFTING_STATION_SLAB), EntryStacks.of(ImprovedStations.CRAFTING_TABLE_SLAB));
+        registry.addWorkstations(BuiltinPlugin.SMELTING, EntryStacks.of(ImprovedStations.FURNACE_SLAB));
+        registry.addWorkstations(BuiltinPlugin.SMOKING, EntryStacks.of(ImprovedStations.SMOKER_SLAB));
+        registry.addWorkstations(BuiltinPlugin.BLASTING, EntryStacks.of(ImprovedStations.BLAST_FURNACE_SLAB));
     }
 }
