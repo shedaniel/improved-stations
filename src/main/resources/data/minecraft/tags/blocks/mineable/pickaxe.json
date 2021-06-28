@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "improved-stations:furnace_slab",
+    "improved-stations:smoker_slab",
+    "improved-stations:blast_furnace_slab"
+  ]
+}

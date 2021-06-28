@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "improved-stations:crafting_station",
+    "improved-stations:crafting_station_slab",
+    "improved-stations:crafting_table_slab",
+    "improved-stations:jukebox_slab",
+    "improved-stations:loom_slab",
+    "improved-stations:cartography_table_slab"
+  ]
+}

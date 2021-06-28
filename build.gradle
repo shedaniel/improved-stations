@@ -17,6 +17,7 @@ minecraft {
 }
 
 repositories {
+    maven { url "https://www.cursemaven.com" }
     maven { url "https://maven.shedaniel.me" }
 }
 
@@ -35,6 +36,8 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.roughlyenoughitems}"
     modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.roughlyenoughitems}"
     compileOnly 'org.jetbrains:annotations:19.0.0'
+    modRuntime "curse.maven:wthit-440979:3360403"
+    modRuntime "curse.maven:cimtb-400929:3367227"
 //    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
 //        transitive = false
 //    }
