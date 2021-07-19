@@ -6,12 +6,8 @@
 package me.shedaniel.istations.mixin;
 
 import me.shedaniel.istations.ImprovedStations;
-import net.minecraft.container.BlockContext;
-import net.minecraft.container.ContainerType;
-import net.minecraft.container.CraftingContainer;
-import net.minecraft.container.CraftingTableContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,18 +15,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CraftingTableContainer.class)
-public abstract class MixinCraftingTableContainer extends CraftingContainer<CraftingInventory> {
-    @Shadow
-    @Final
-    private BlockContext context;
+@Mixin(CraftingMenu.class)
+public abstract class MixinCraftingTableContainer extends RecipeBookMenu<CraftingContainer> {
+    @Shadow @Final private ContainerLevelAccess access;
     
-    public MixinCraftingTableContainer(ContainerType<?> containerType, int i) {
+    public MixinCraftingTableContainer(MenuType<?> containerType, int i) {
         super(containerType, i);
     }
     
-    @Inject(method = "canUse", at = @At("RETURN"), cancellable = true)
-    private void canUse(PlayerEntity player, CallbackInfoReturnable<Boolean> callback) {
-        if (!callback.getReturnValue()) callback.setReturnValue(canUse(this.context, player, ImprovedStations.CRAFTING_TABLE_SLAB));
+    @Inject(method = "stillValid", at = @At("RETURN"), cancellable = true)
+    private void canUse(Player player, CallbackInfoReturnable<Boolean> callback) {
+        if (!callback.getReturnValue()) callback.setReturnValue(stillValid(this.access, player, ImprovedStations.CRAFTING_TABLE_SLAB));
     }
 }

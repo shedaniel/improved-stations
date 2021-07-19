@@ -7,161 +7,164 @@ package me.shedaniel.istations.blocks;
 
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import me.shedaniel.istations.containers.ExtendedScreenHandlerFactoryWrapped;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
-import net.minecraft.container.NameableContainerFactory;
-import net.minecraft.entity.EntityContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.*;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingStationBlock extends BlockWithEntity implements Waterloggable {
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+public class CraftingStationBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     
     private static final VoxelShape SHAPE;
     
     static {
-        SHAPE = VoxelShapes.union(Block.createCuboidShape(0, 12, 0, 16, 16, 16), Block.createCuboidShape(0, 0, 0, 4, 12, 4), Block.createCuboidShape(0, 0, 12, 4, 12, 16), Block.createCuboidShape(12, 0, 12, 16, 12, 16), Block.createCuboidShape(12, 0, 0, 16, 12, 4));
+        SHAPE = Shapes.or(Block.box(0, 12, 0, 16, 16, 16), Block.box(0, 0, 0, 4, 12, 4), Block.box(0, 0, 12, 4, 12, 16), Block.box(12, 0, 12, 16, 12, 16), Block.box(12, 0, 0, 16, 12, 4));
     }
     
-    public CraftingStationBlock(Settings settings) {
+    public CraftingStationBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
     
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockPos blockPos = ctx.getBlockPos();
-        BlockState blockState = ctx.getWorld().getBlockState(blockPos);
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        BlockPos blockPos = ctx.getClickedPos();
+        BlockState blockState = ctx.getLevel().getBlockState(blockPos);
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
-            return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+            FluidState fluidState = ctx.getLevel().getFluidState(blockPos);
+            return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
         }
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation(state.get(FACING)));
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
     
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, WATERLOGGED);
     }
     
     @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
     
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CraftingStationBlockEntity(pos, state);
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!world.isClient) {
-            player.openContainer(state.createScreenHandlerFactory(world, pos));
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!world.isClientSide) {
+            player.openMenu(state.getMenuProvider(world, pos));
         }
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
     
     @Override
-    public @Nullable NameableContainerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        return new ExtendedScreenHandlerFactoryWrapped(super.createScreenHandlerFactory(state, world, pos), (serverPlayerEntity, packetByteBuf) -> packetByteBuf.writeBlockPos(pos));
+    @Nullable
+    public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos) {
+        return new ExtendedScreenHandlerFactoryWrapped(super.getMenuProvider(state, world, pos), (player, buf) -> buf.writeBlockPos(pos));
     }
     
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state,
-            LivingEntity placer, ItemStack itemStack) {
-        if (itemStack.hasCustomName()) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        if (itemStack.hasCustomHoverName()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
-                ((CraftingStationBlockEntity) blockEntity).setCustomName(itemStack.getName());
+                ((CraftingStationBlockEntity) blockEntity).setCustomName(itemStack.getHoverName());
             }
         }
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
-        if (state.get(WATERLOGGED)) {
-            world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) {
+            world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        return super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, facing, neighborState, world, pos, neighborPos);
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingStationBlockEntity) {
-                ItemScatterer.spawn(world, pos, (CraftingStationBlockEntity) blockEntity);
-                world.updateHorizontalAdjacent(pos, this);
+                Containers.dropContents(world, pos, (CraftingStationBlockEntity) blockEntity);
+                world.updateNeighbourForOutputSignal(pos, this);
             }
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onRemove(state, world, pos, newState, moved);
         }
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean hasComparatorOutput(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return Container.calculateComparatorOutput(world.getBlockEntity(pos));
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
     }
     
     @Override
-    public BlockRenderType getRenderType(BlockState blockState_1) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState blockState_1) {
+        return RenderShape.MODEL;
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean hasSidedTransparency(BlockState blockState_1) {
+    public boolean useShapeForLightOcclusion(BlockState blockState_1) {
         return true;
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
+    public VoxelShape getShape(BlockState blockState_1, BlockGetter blockView_1, BlockPos blockPos_1, CollisionContext entityContext_1) {
         return SHAPE;
     }
 }

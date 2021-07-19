@@ -9,8 +9,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.hooks.BlockEntityTypeHooks;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -29,7 +29,7 @@ public class MixinBlockEntityType implements BlockEntityTypeHooks {
     @Shadow @Final public static BlockEntityType<SmokerBlockEntity> SMOKER;
     @Shadow @Final public static BlockEntityType<BlastFurnaceBlockEntity> BLAST_FURNACE;
     @Shadow @Final public static BlockEntityType<JukeboxBlockEntity> JUKEBOX;
-    @Shadow @Mutable @Final private Set<Block> blocks;
+    @Shadow @Mutable @Final private Set<Block> validBlocks;
     
     @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void afterStaticInit(CallbackInfo info) {
@@ -41,8 +41,8 @@ public class MixinBlockEntityType implements BlockEntityTypeHooks {
     
     @Override
     public void istations_applyMoreBlocks(Block... blocks) {
-        List<Block> list = Lists.newArrayList(this.blocks);
+        List<Block> list = Lists.newArrayList(this.validBlocks);
         Collections.addAll(list, blocks);
-        this.blocks = ImmutableSet.copyOf(list);
+        this.validBlocks = ImmutableSet.copyOf(list);
     }
 }

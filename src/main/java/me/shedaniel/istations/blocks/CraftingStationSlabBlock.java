@@ -5,23 +5,23 @@
 
 package me.shedaniel.istations.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlacementEnvironment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.enums.SlabType;
-import net.minecraft.entity.EntityContext;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.tag.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class CraftingStationSlabBlock extends CraftingStationBlock {
     public static final EnumProperty<SlabType> TYPE = SlabBlock.TYPE;
@@ -29,49 +29,49 @@ public class CraftingStationSlabBlock extends CraftingStationBlock {
     protected static final VoxelShape TOP_SHAPE;
     
     static {
-        BOTTOM_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
-        TOP_SHAPE = Block.createCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        BOTTOM_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+        TOP_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     }
     
-    public CraftingStationSlabBlock(Settings settings) {
+    public CraftingStationSlabBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, Boolean.FALSE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(TYPE, SlabType.BOTTOM).setValue(WATERLOGGED, Boolean.FALSE));
     }
     
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockPos blockPos = ctx.getBlockPos();
-        BlockState blockState = ctx.getWorld().getBlockState(blockPos);
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        BlockPos blockPos = ctx.getClickedPos();
+        BlockState blockState = ctx.getLevel().getBlockState(blockPos);
         if (blockState.getBlock() == this) {
             return null;
         } else {
-            FluidState fluidState = ctx.getWorld().getFluidState(blockPos);
-            BlockState blockState2 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(FACING, ctx.getPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
-            Direction direction = ctx.getSide();
-            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getHitPos().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.with(TYPE, SlabType.TOP);
+            FluidState fluidState = ctx.getLevel().getFluidState(blockPos);
+            BlockState blockState2 = this.defaultBlockState().setValue(TYPE, SlabType.BOTTOM).setValue(FACING, ctx.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+            Direction direction = ctx.getClickedFace();
+            return direction != Direction.DOWN && (direction == Direction.UP || ctx.getClickLocation().y - (double) blockPos.getY() <= 0.5D) ? blockState2 : blockState2.setValue(TYPE, SlabType.TOP);
         }
     }
     
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, WATERLOGGED, TYPE);
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPathfindThrough(BlockState world, BlockView view, BlockPos pos, BlockPlacementEnvironment env) {
-        if (env == BlockPlacementEnvironment.WATER) {
-            return view.getFluidState(pos).matches(FluidTags.WATER);
+    public boolean isPathfindable(BlockState world, BlockGetter view, BlockPos pos, PathComputationType env) {
+        if (env == PathComputationType.WATER) {
+            return view.getFluidState(pos).is(FluidTags.WATER);
         }
         return false;
     }
     
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
-        SlabType slabType = blockState_1.get(TYPE);
+    public VoxelShape getShape(BlockState blockState_1, BlockGetter blockView_1, BlockPos blockPos_1, CollisionContext entityContext_1) {
+        SlabType slabType = blockState_1.getValue(TYPE);
         switch (slabType) {
             case DOUBLE:
-                return VoxelShapes.fullCube();
+                return Shapes.block();
             case TOP:
                 return TOP_SHAPE;
             default:

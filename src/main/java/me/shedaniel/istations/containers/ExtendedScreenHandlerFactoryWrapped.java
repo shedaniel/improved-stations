@@ -6,38 +6,34 @@
 package me.shedaniel.istations.containers;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.container.Container;
-import net.minecraft.container.NameableContainerFactory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
-public class ExtendedScreenHandlerFactoryWrapped implements ExtendedScreenHandlerFactory {
-    private final NameableContainerFactory factory;
-    private final BiConsumer<ServerPlayerEntity, PacketByteBuf> dataWriter;
-    
-    public ExtendedScreenHandlerFactoryWrapped(NameableContainerFactory factory, BiConsumer<ServerPlayerEntity, PacketByteBuf> dataWriter) {
-        this.factory = factory;
-        this.dataWriter = dataWriter;
-    }
-    
+public record ExtendedScreenHandlerFactoryWrapped(
+        MenuProvider factory,
+        BiConsumer<ServerPlayer, FriendlyByteBuf> dataWriter
+) implements ExtendedScreenHandlerFactory {
     @Override
-    public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
+    public void writeScreenOpeningData(ServerPlayer serverPlayerEntity, FriendlyByteBuf packetByteBuf) {
         this.dataWriter.accept(serverPlayerEntity, packetByteBuf);
     }
     
     @Override
-    public Text getDisplayName() {
+    public Component getDisplayName() {
         return factory.getDisplayName();
     }
     
     @Override
-    public @Nullable Container createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+    @Nullable
+    public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
         return factory.createMenu(syncId, inv, player);
     }
 }

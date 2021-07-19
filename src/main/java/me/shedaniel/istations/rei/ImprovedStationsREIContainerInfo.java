@@ -5,38 +5,39 @@
 
 package me.shedaniel.istations.rei;
 
-import me.shedaniel.istations.containers.CraftingStationScreenHandler;
+import me.shedaniel.istations.containers.CraftingStationMenu;
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin;
 import me.shedaniel.rei.api.common.transfer.RecipeFinder;
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoRegistry;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.item.ItemStack;
 
 public class ImprovedStationsREIContainerInfo implements REIServerPlugin {
     @Override
     public void registerMenuInfo(MenuInfoRegistry registry) {
-        registry.register(BuiltinPlugin.CRAFTING, CraftingStationScreenHandler.class, new SimpleGridMenuInfo<>() {
+        registry.register(BuiltinPlugin.CRAFTING, CraftingStationMenu.class, new SimpleGridMenuInfo<>() {
             @Override
-            public int getCraftingResultSlotIndex(CraftingStationScreenHandler menu) {
+            public int getCraftingResultSlotIndex(CraftingStationMenu menu) {
                 return 0;
             }
             
             @Override
-            public int getCraftingWidth(CraftingStationScreenHandler menu) {
+            public int getCraftingWidth(CraftingStationMenu menu) {
                 return 3;
             }
             
             @Override
-            public int getCraftingHeight(CraftingStationScreenHandler menu) {
+            public int getCraftingHeight(CraftingStationMenu menu) {
                 return 3;
             }
             
             @Override
-            public void populateRecipeFinder(CraftingStationScreenHandler menu, RecipeFinder finder) {
-                menu.populateRecipeFinder(new net.minecraft.recipe.RecipeFinder() {
+            public void populateRecipeFinder(CraftingStationMenu menu, RecipeFinder finder) {
+                menu.populateRecipeFinder(new StackedContents() {
                     @Override
-                    public void addInput(ItemStack itemStack, int i) {
+                    public void accountStack(ItemStack itemStack, int i) {
                         finder.addItem(itemStack, i);
                     }
                 });

@@ -6,66 +6,66 @@
 package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
-import me.shedaniel.istations.containers.CraftingStationScreenHandler;
+import me.shedaniel.istations.containers.CraftingStationMenu;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.container.BlockContext;
-import net.minecraft.container.Container;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.RecipeFinder;
-import net.minecraft.recipe.RecipeInputProvider;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
 
-public class CraftingStationBlockEntity extends LockableContainerBlockEntity implements RecipeInputProvider, BlockEntityClientSerializable {
+public class CraftingStationBlockEntity extends BaseContainerBlockEntity implements StackedContentsCompatible, BlockEntityClientSerializable {
     
-    protected DefaultedList<ItemStack> inventory;
+    protected NonNullList<ItemStack> inventory;
     
     public CraftingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY, blockPos, blockState);
-        this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     }
     
     @Override
-    protected Text getContainerName() {
-        return new TranslatableText("container.crafting");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("container.crafting");
     }
     
     @Override
-    protected Container createContainer(int syncId, PlayerInventory playerInventory) {
-        return new CraftingStationScreenHandler(syncId, playerInventory, this, BlockContext.EMPTY);
+    protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
+        return new CraftingStationMenu(syncId, playerInventory, this, ContainerLevelAccess.NULL);
     }
     
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
-        this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
-        Inventories.fromTag(tag, this.inventory);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag, this.inventory);
     }
     
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        Inventories.writeNbt(tag, this.inventory);
+    public CompoundTag save(CompoundTag tag) {
+        super.save(tag);
+        ContainerHelper.saveAllItems(tag, this.inventory);
         return tag;
     }
     
     @Override
-    public int getInvSize() {
+    public int getContainerSize() {
         return this.inventory.size();
     }
     
     @Override
-    public boolean isInvEmpty() {
+    public boolean isEmpty() {
         for (ItemStack itemStack : this.inventory) {
             if (!itemStack.isEmpty())
                 return false;
@@ -74,56 +74,56 @@ public class CraftingStationBlockEntity extends LockableContainerBlockEntity imp
     }
     
     @Override
-    public ItemStack getInvStack(int slot) {
+    public ItemStack getItem(int slot) {
         return this.inventory.get(slot);
     }
     
     @Override
-    public ItemStack takeInvStack(int slot, int amount) {
-        return Inventories.splitStack(this.inventory, slot, amount);
+    public ItemStack removeItem(int slot, int amount) {
+        return ContainerHelper.removeItem(this.inventory, slot, amount);
     }
     
     @Override
-    public ItemStack removeInvStack(int slot) {
-        return Inventories.removeStack(this.inventory, slot);
+    public ItemStack removeItemNoUpdate(int slot) {
+        return ContainerHelper.takeItem(this.inventory, slot);
     }
     
     @Override
-    public void setInvStack(int slot, ItemStack stack) {
+    public void setItem(int slot, ItemStack stack) {
         this.inventory.set(slot, stack);
-        if (stack.getCount() > this.getInvMaxStackAmount()) {
-            stack.setCount(this.getInvMaxStackAmount());
+        if (stack.getCount() > this.getMaxStackSize()) {
+            stack.setCount(this.getMaxStackSize());
         }
     }
     
     @Override
-    public boolean canPlayerUseInv(PlayerEntity player) {
-        if (Objects.requireNonNull(this.world).getBlockEntity(this.pos) != this) {
+    public boolean stillValid(Player player) {
+        if (Objects.requireNonNull(this.level).getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return player.squaredDistanceTo((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+            return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
         }
     }
     
     @Override
-    public void clear() {
+    public void clearContent() {
         this.inventory.clear();
     }
     
     @Override
-    public void provideRecipeInputs(RecipeFinder recipeFinder) {
+    public void fillStackedContents(StackedContents recipeFinder) {
         for (ItemStack stack : inventory) {
-            recipeFinder.addItem(stack);
+            recipeFinder.accountSimpleStack(stack);
         }
     }
     
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        fromTag(compoundTag);
+        load(compoundTag);
     }
     
     @Override
     public CompoundTag toClientTag(CompoundTag compoundTag) {
-        return toTag(compoundTag);
+        return save(compoundTag);
     }
 }

@@ -5,38 +5,38 @@
 
 package me.shedaniel.istations.blocks.entities.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import me.shedaniel.istations.blocks.CraftingStationSlabBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.enums.SlabType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 
 import java.util.Objects;
 
 public class CraftingStationBlockEntityRenderer implements BlockEntityRenderer<CraftingStationBlockEntity> {
-    public CraftingStationBlockEntityRenderer(BlockEntityRendererFactory.Context dispatcher) {
+    public CraftingStationBlockEntityRenderer(BlockEntityRendererProvider.Context dispatcher) {
     }
     
     @Override
-    public void render(CraftingStationBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(CraftingStationBlockEntity blockEntity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         try {
-            int lightAbove = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().up());
-            BlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
-            Direction o = state.get(HorizontalFacingBlock.FACING);
-            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.contains(SlabBlock.TYPE)) ? state.get(SlabBlock.TYPE) : SlabType.DOUBLE;
+            int lightAbove = LevelRenderer.getLightColor(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos().above());
+            BlockState state = blockEntity.getLevel().getBlockState(blockEntity.getBlockPos());
+            Direction o = state.getValue(HorizontalDirectionalBlock.FACING);
+            SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.hasProperty(SlabBlock.TYPE)) ? state.getValue(SlabBlock.TYPE) : SlabType.DOUBLE;
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++) {
                     int slotId = x + y * 3;
@@ -58,25 +58,25 @@ public class CraftingStationBlockEntityRenderer implements BlockEntityRenderer<C
                         newX *= -1;
                     }
                     
-                    ItemStack stack = blockEntity.getInvStack(slotId);
+                    ItemStack stack = blockEntity.getItem(slotId);
                     if (stack.isEmpty())
                         continue;
-                    BakedModel bakedModel = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, null, null, 0);
-                    matrices.push();
+                    BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0);
+                    matrices.pushPose();
                     if (slabType == SlabType.BOTTOM) {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, .5d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
                     } else {
                         matrices.translate(5 / 16d + (newX + 1) * 3 / 16d, 1d - .5 / 16d, 5 / 16d + (newY + 1) * 3 / 16d);
                     }
-                    if (!bakedModel.hasDepth()) {
+                    if (!bakedModel.isGui3d()) {
                         matrices.translate(0, .55 / 16d, -.5d / 16d);
-                        matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
+                        matrices.mulPose(Vector3f.XP.rotationDegrees(90));
                         matrices.scale(.3f, .3f, .3f);
                     } else {
                         matrices.scale(.5f, .5f, .5f);
                     }
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.DEFAULT_UV, bakedModel);
-                    matrices.pop();
+                    Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.GROUND, false, matrices, vertexConsumers, lightAbove, OverlayTexture.NO_OVERLAY, bakedModel);
+                    matrices.popPose();
                 }
         } catch (Exception e) {
             e.printStackTrace();

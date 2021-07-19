@@ -7,41 +7,41 @@ package me.shedaniel.istations.mixin;
 
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.JukeboxSlabBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(MusicDiscItem.class)
+@Mixin(RecordItem.class)
 public class MixinMusicDiscItem {
-    @Inject(method = "useOnBlock", at = @At("RETURN"), cancellable = true)
-    public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> callback) {
-        if (callback.getReturnValue().equals(ActionResult.PASS)) {
-            World world = context.getWorld();
-            BlockPos blockPos = context.getBlockPos();
+    @Inject(method = "useOn", at = @At("RETURN"), cancellable = true)
+    public void useOnBlock(UseOnContext context, CallbackInfoReturnable<InteractionResult> callback) {
+        if (callback.getReturnValue().equals(InteractionResult.PASS)) {
+            Level world = context.getLevel();
+            BlockPos blockPos = context.getClickedPos();
             BlockState blockState = world.getBlockState(blockPos);
-            if (blockState.getBlock() == ImprovedStations.JUKEBOX_SLAB && !blockState.get(JukeboxSlabBlock.HAS_RECORD)) {
-                ItemStack itemStack = context.getStack();
-                if (!world.isClient) {
+            if (blockState.getBlock() == ImprovedStations.JUKEBOX_SLAB && !blockState.getValue(JukeboxSlabBlock.HAS_RECORD)) {
+                ItemStack itemStack = context.getItemInHand();
+                if (!world.isClientSide) {
                     ((JukeboxSlabBlock) ImprovedStations.JUKEBOX_SLAB).setRecord(world, blockPos, blockState, itemStack);
-                    world.syncWorldEvent(null, 1010, blockPos, Item.getRawId((MusicDiscItem) (Object) this));
-                    itemStack.decrement(1);
-                    PlayerEntity playerEntity = context.getPlayer();
+                    world.levelEvent(null, 1010, blockPos, Item.getId((RecordItem) (Object) this));
+                    itemStack.shrink(1);
+                    Player playerEntity = context.getPlayer();
                     if (playerEntity != null) {
-                        playerEntity.incrementStat(Stats.PLAY_RECORD);
+                        playerEntity.awardStat(Stats.PLAY_RECORD);
                     }
                 }
-                callback.setReturnValue(ActionResult.SUCCESS);
+                callback.setReturnValue(InteractionResult.SUCCESS);
             }
         }
     }
