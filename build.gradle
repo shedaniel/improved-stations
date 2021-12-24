@@ -57,11 +57,6 @@ tasks.withType(JavaCompile) {
     options.release = 16
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
-
 jar {
 	from "LICENSE"
 }
@@ -73,9 +68,6 @@ publishing {
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
 				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
 			}
 		}
 	}
