@@ -72,7 +72,7 @@ public class CraftingStationMenu extends AbstractContainerMenu {
             
             @Override
             public void setChanged() {
-                entity.setChanged();
+                entity.markDirty();
             }
             
             @Override
@@ -150,7 +150,7 @@ public class CraftingStationMenu extends AbstractContainerMenu {
         super.slotsChanged(inventory);
         broadcastChanges();
         if (!player.level.isClientSide) {
-            entity.setChanged();
+            entity.markDirty();
         }
     }
     

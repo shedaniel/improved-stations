@@ -5,6 +5,7 @@
 
 package me.shedaniel.istations.blocks;
 
+import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import me.shedaniel.istations.containers.ExtendedScreenHandlerFactoryWrapped;
 import net.minecraft.core.BlockPos;
@@ -23,6 +24,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -92,6 +96,14 @@ public class CraftingStationBlock extends BaseEntityBlock implements SimpleWater
         return new CraftingStationBlockEntity(pos, state);
     }
     
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY, (level1, blockPos, blockState1, blockEntity) -> {
+            blockEntity.tick();
+        });
+    }
+    
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -121,8 +133,9 @@ public class CraftingStationBlock extends BaseEntityBlock implements SimpleWater
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
+        
         return super.updateShape(state, facing, neighborState, world, pos, neighborPos);
     }
     

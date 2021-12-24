@@ -7,12 +7,15 @@ package me.shedaniel.istations.blocks.entities;
 
 import me.shedaniel.istations.ImprovedStations;
 import me.shedaniel.istations.containers.CraftingStationMenu;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,12 +26,13 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class CraftingStationBlockEntity extends BaseContainerBlockEntity implements StackedContentsCompatible, BlockEntityClientSerializable {
-    
+public class CraftingStationBlockEntity extends BaseContainerBlockEntity implements StackedContentsCompatible {
     protected NonNullList<ItemStack> inventory;
+    private boolean dirty = false;
     
     public CraftingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ImprovedStations.CRAFTING_STATION_BLOCK_ENTITY, blockPos, blockState);
@@ -53,10 +57,23 @@ public class CraftingStationBlockEntity extends BaseContainerBlockEntity impleme
     }
     
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        super.save(tag);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         ContainerHelper.saveAllItems(tag, this.inventory);
-        return tag;
+    }
+    
+    public void tick() {
+        if (hasLevel() && !getLevel().isClientSide) {
+            if (dirty) {
+                dirty = false;
+                setChanged();
+                ((ServerLevel) getLevel()).getChunkSource().blockChanged(getBlockPos());
+            }
+        }
+    }
+    
+    public void markDirty() {
+        this.dirty = true;
     }
     
     @Override
@@ -118,12 +135,13 @@ public class CraftingStationBlockEntity extends BaseContainerBlockEntity impleme
     }
     
     @Override
-    public void fromClientTag(CompoundTag compoundTag) {
-        load(compoundTag);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
     
+    @Nullable
     @Override
-    public CompoundTag toClientTag(CompoundTag compoundTag) {
-        return save(compoundTag);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

@@ -72,7 +72,7 @@ public class CraftingTableSlabBlock extends CraftingTableBlock implements Simple
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
         return super.updateShape(state, facing, neighborState, world, pos, neighborPos);
     }

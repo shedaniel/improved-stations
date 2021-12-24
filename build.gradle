@@ -1,7 +1,8 @@
 plugins {
-	id 'fabric-loom' version "0.8-SNAPSHOT"
+	id 'fabric-loom' version "0.10-SNAPSHOT"
 	id 'maven-publish'
-    id 'org.cadixdev.licenser' version '0.6.0'
+    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
+    id 'org.cadixdev.licenser' version '0.6.1'
 }
 
 archivesBaseName = project.archives_base_name
@@ -35,9 +36,9 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.roughlyenoughitems}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.roughlyenoughitems}"
     modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.roughlyenoughitems}"
-    compileOnly 'org.jetbrains:annotations:19.0.0'
-    modRuntime "curse.maven:wthit-440979:3360403"
-    modRuntime "curse.maven:cimtb-400929:3367227"
+    // compileOnly 'org.jetbrains:annotations:19.0.0'
+    // modRuntime "curse.maven:wthit-440979:3360403"
+    // modRuntime "curse.maven:cimtb-400929:3367227"
 //    modRuntime("com.lettuce.fudge:notenoughcrashes:${project.notenoughcrashes_version}") {
 //        transitive = false
 //    }
