@@ -7,6 +7,7 @@ package me.shedaniel.istations.blocks.entities.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import me.shedaniel.istations.blocks.CraftingStationBlock;
 import me.shedaniel.istations.blocks.CraftingStationSlabBlock;
 import me.shedaniel.istations.blocks.entities.CraftingStationBlockEntity;
 import net.minecraft.client.Minecraft;
@@ -34,7 +35,8 @@ public class CraftingStationBlockEntityRenderer implements BlockEntityRenderer<C
     public void render(CraftingStationBlockEntity blockEntity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         try {
             int lightAbove = LevelRenderer.getLightColor(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos().above());
-            BlockState state = blockEntity.getLevel().getBlockState(blockEntity.getBlockPos());
+            BlockState state = blockEntity.getBlockState();
+            if (!(state.getBlock() instanceof CraftingStationBlock)) return;
             Direction o = state.getValue(HorizontalDirectionalBlock.FACING);
             SlabType slabType = (state.getBlock() instanceof CraftingStationSlabBlock && state.hasProperty(SlabBlock.TYPE)) ? state.getValue(SlabBlock.TYPE) : SlabType.DOUBLE;
             for (int x = 0; x < 3; x++)
