@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,8 +21,6 @@ import net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
-
-import java.util.Random;
 
 public class BlastFurnaceSlabBlock extends AbstactFurnaceSlabBlock {
     public BlastFurnaceSlabBlock(Properties settings) {
@@ -44,7 +43,7 @@ public class BlastFurnaceSlabBlock extends AbstactFurnaceSlabBlock {
     
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         if (state.getValue(LIT)) {
             double d = (double) pos.getX() + 0.5D;
             double e = (double) pos.getY() + (state.getValue(TYPE) == SlabType.TOP ? 0.5D : 0);

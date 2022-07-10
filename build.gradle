@@ -1,7 +1,7 @@
 plugins {
-	id 'fabric-loom' version "0.10-SNAPSHOT"
+	id 'fabric-loom' version "0.11-SNAPSHOT"
 	id 'maven-publish'
-    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.3'
     id 'org.cadixdev.licenser' version '0.6.1'
 }
 
@@ -12,9 +12,6 @@ group = project.maven_group
 license {
     header rootProject.file('HEADER')
     include '**/*.java'
-}
-
-minecraft {
 }
 
 repositories {
@@ -35,7 +32,7 @@ dependencies {
 	// You may need to force-disable transitiveness on them.
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.roughlyenoughitems}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.roughlyenoughitems}"
-    modRuntime "me.shedaniel:RoughlyEnoughItems-fabric:${project.roughlyenoughitems}"
+	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.roughlyenoughitems}"
     // compileOnly 'org.jetbrains:annotations:19.0.0'
     // modRuntime "curse.maven:wthit-440979:3360403"
     // modRuntime "curse.maven:cimtb-400929:3367227"
@@ -55,7 +52,7 @@ processResources {
 
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
-    options.release = 16
+    options.release = 17
 }
 
 jar {
