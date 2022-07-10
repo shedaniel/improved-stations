@@ -21,9 +21,11 @@
     "client": [
       "me.shedaniel.istations.ImprovedStationsClient"
     ],
-    "rei": [
-      "me.shedaniel.istations.rei.ImprovedStationsREIContainerInfo",
+    "rei_client": [
       "me.shedaniel.istations.rei.ImprovedStationsREIPlugin"
+    ],
+    "rei_server": [
+      "me.shedaniel.istations.rei.ImprovedStationsREIContainerInfo"
     ]
   },
   "mixins": [
